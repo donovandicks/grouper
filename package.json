@@ -3,7 +3,8 @@
     "build": "tsc --project tsconfig.json",
     "start": "pnpm run build && node dist/index.js",
     "lint": "npx prettier . --check && tsc --project tsconfig.json --noEmit",
-    "lint-fix": "npx prettier . --write"
+    "lint-fix": "npx prettier . --write",
+    "test": "npx jest ."
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
@@ -19,7 +20,11 @@
   "jest": {
     "transform": {
       "^.+\\.ts?$": "ts-jest"
-    }
+    },
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/dist/"
+    ]
   },
   "dependencies": {
     "commander": "^12.0.0",
