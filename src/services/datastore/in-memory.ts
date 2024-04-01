@@ -1,0 +1,143 @@
+import { CreateGroupDTO, CreateUserDTO } from "../../api/models";
+import { Group, GroupID, User, UserID } from "../../domain/index";
+import { Datastore } from "./datastore";
+import { UUID, randomUUID } from "crypto";
+
+const toKebab = (raw: string): string => {
+  return raw.toLocaleLowerCase().replaceAll(" ", "-");
+};
+
+class GroupRepository {
+  groups: Map<GroupID, Group>;
+
+  constructor() {
+    this.groups = new Map();
+  }
+
+  async create(group: CreateGroupDTO): Promise<Group> {
+    const id = randomUUID();
+    const g = { id, name: group.name, handle: group.handle ?? toKebab(group.name) };
+    this.groups.set(id, g);
+    return g;
+  }
+
+  async get(id: GroupID): Promise<Group | undefined> {
+    return this.groups.get(id);
+  }
+
+  async list(): Promise<Group[]> {
+    return [...this.groups.values()];
+  }
+
+  async delete(id: GroupID): Promise<Group | undefined> {
+    const existing = this.groups.get(id);
+    this.groups.delete(id);
+    return existing;
+  }
+}
+
+class UserRepository {
+  users: Map<UserID, User>;
+
+  constructor() {
+    this.users = new Map();
+  }
+
+  async create(user: CreateUserDTO): Promise<User> {
+    const u = {
+      ...user,
+      id: randomUUID(),
+    };
+    this.users.set(u.id, u);
+    return u;
+  }
+
+  async get(id: UserID): Promise<User | undefined> {
+    return this.users.get(id);
+  }
+
+  async list(filter?: (user: User) => boolean): Promise<User[]> {
+    return [...this.users.values()].filter(filter ?? (() => true));
+  }
+
+  async delete(id: UserID): Promise<User | undefined> {
+    const existing = this.users.get(id);
+    this.users.delete(id);
+    return existing;
+  }
+}
+
+class GroupMemberRepository {
+  members: Map<UUID, { groupId: GroupID; userId: UserID }>;
+
+  constructor() {
+    this.members = new Map();
+  }
+
+  async addGroupMember(groupId: GroupID, userId: UserID) {
+    this.members.set(randomUUID(), { groupId, userId });
+  }
+
+  async removeGroupMember() {}
+
+  async getGroupMembers(groupId: GroupID): Promise<UserID[]> {
+    return [...this.members.values()].filter((o) => o.groupId === groupId).map((o) => o.userId);
+  }
+}
+
+export class InMemoryDatastore implements Datastore {
+  groups: GroupRepository;
+  users: UserRepository;
+  groupMembers: GroupMemberRepository;
+
+  constructor() {
+    this.groups = new GroupRepository();
+    this.users = new UserRepository();
+    this.groupMembers = new GroupMemberRepository();
+  }
+
+  async removeGroupMember(group: GroupID, user: UserID): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
+
+  async addGroupMember(group: GroupID, user: UserID): Promise<void> {
+    this.groupMembers.addGroupMember(group, user);
+  }
+
+  async getGroupMembers(group: GroupID): Promise<User[]> {
+    const userIds = await this.groupMembers.getGroupMembers(group);
+    return this.users.list((user) => userIds.includes(user.id));
+  }
+
+  async createGroup(group: CreateGroupDTO): Promise<Group> {
+    return this.groups.create(group);
+  }
+
+  async getGroup(id: GroupID): Promise<Group | undefined> {
+    return this.groups.get(id);
+  }
+
+  async listGroups(): Promise<Group[]> {
+    return this.groups.list();
+  }
+
+  async deleteGroup(id: GroupID): Promise<Group | undefined> {
+    return this.groups.delete(id);
+  }
+
+  async createUser(user: CreateUserDTO): Promise<User> {
+    return this.users.create(user);
+  }
+
+  async getUser(id: UserID): Promise<User | undefined> {
+    return this.users.get(id);
+  }
+
+  async listUsers(): Promise<User[]> {
+    return this.users.list();
+  }
+
+  async deleteUser(id: UserID): Promise<User | undefined> {
+    return this.users.delete(id);
+  }
+}
