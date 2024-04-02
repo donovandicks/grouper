@@ -9,7 +9,7 @@ up:
 build:
 	pnpm run build
 
-run: up
+run:
 	pnpm run start
 
 lint:
