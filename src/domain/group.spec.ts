@@ -7,6 +7,8 @@ describe("Group Model", () => {
       id: randomUUID(),
       name: "Group 1",
       handle: "group1",
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
 
     expect(group.id).toBeDefined();
@@ -19,6 +21,8 @@ describe("Group Model", () => {
       id: randomUUID(),
       name: "Group 1",
       handle: "group1",
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
 
     expect(typeof group.id).toBe("string");
@@ -29,6 +33,8 @@ describe("Group Model", () => {
       id: randomUUID(),
       name: "Group 1",
       handle: "group1",
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
 
     expect(typeof group.name).toBe("string");
