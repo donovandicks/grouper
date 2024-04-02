@@ -20,7 +20,7 @@ export async function runMigrations() {
       direction: "up",
       verbose: true,
       dir: join(resolve(__dirname, ".."), "migrations"),
-      migrationsTable: "migrations",
+      migrationsTable: "tbl_migrations",
       databaseUrl: config,
     });
     logger.info("migrations ran successfully.");
