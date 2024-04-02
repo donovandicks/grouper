@@ -12,7 +12,7 @@ export const removeGroupMember = async ({
   logger.info(`removing user ${userId} from group ${groupId}`);
 
   const endpoint = `${GROUPS_BASE_URL}/${groupId}/members/${userId}`;
-  const res = await fetch(endpoint, {
+  await fetch(endpoint, {
     method: "DELETE",
     headers: HEADERS,
   });

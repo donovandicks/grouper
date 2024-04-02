@@ -8,7 +8,7 @@ export const addGroupMember = async ({ groupId, userId }: { groupId: GroupID; us
   const data = JSON.stringify({ userId });
 
   const endpoint = `${GROUPS_BASE_URL}/${groupId}/members`;
-  const res = await fetch(endpoint, {
+  await fetch(endpoint, {
     method: "POST",
     headers: {
       ...HEADERS,
