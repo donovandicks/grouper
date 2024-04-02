@@ -16,7 +16,13 @@ class GroupRepository {
 
   async create(group: CreateGroupDTO): Promise<Group> {
     const id = randomUUID();
-    const g = { id, name: group.name, handle: group.handle ?? toKebab(group.name) };
+    const g: Group = {
+      id,
+      name: group.name,
+      handle: group.handle ?? toKebab(group.name),
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
     this.groups.set(id, g);
     return g;
   }
@@ -47,6 +53,8 @@ class UserRepository {
     const u = {
       ...user,
       id: randomUUID(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
     this.users.set(u.id, u);
     return u;
@@ -78,7 +86,14 @@ class GroupMemberRepository {
     this.members.set(randomUUID(), { groupId, userId });
   }
 
-  async removeGroupMember() {}
+  async removeGroupMember(groupId: GroupID, userId: UserID) {
+    const entryId = [...this.members.entries()].filter(
+      (e) => e[1].groupId === groupId && e[1].userId === userId,
+    )[0];
+    if (entryId) {
+      this.members.delete(entryId[0]);
+    }
+  }
 
   async getGroupMembers(groupId: GroupID): Promise<UserID[]> {
     return [...this.members.values()].filter((o) => o.groupId === groupId).map((o) => o.userId);
@@ -97,7 +112,7 @@ export class InMemoryDatastore implements Datastore {
   }
 
   async removeGroupMember(group: GroupID, user: UserID): Promise<void> {
-    throw new Error("Method not implemented.");
+    this.groupMembers.removeGroupMember(group, user);
   }
 
   async addGroupMember(group: GroupID, user: UserID): Promise<void> {

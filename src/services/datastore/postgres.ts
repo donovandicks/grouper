@@ -45,7 +45,7 @@ class GroupRepository extends Repository {
     return (
       await this.exec(
         `
-      SELECT id, name, handle
+      SELECT id, name, handle, created_at AS createdAt, updated_at AS updatedAt
       FROM ${this.tbl_name}
       WHERE ${this.tbl_name}.id = $1;
       `,
@@ -57,7 +57,7 @@ class GroupRepository extends Repository {
   async list(): Promise<Group[]> {
     return (
       await this.exec(`
-      SELECT id, name, handle
+      SELECT id, name, handle, created_at AS createdAt, updated_at AS updatedAt
       FROM ${this.tbl_name};
       `)
     ).rows as Group[];
@@ -69,7 +69,7 @@ class GroupRepository extends Repository {
         `
       INSERT INTO ${this.tbl_name} (name, handle)
       VALUES ($1, $2)
-      RETURNING id, name, handle;
+      RETURNING id, name, handle, created_at AS createdAt, updated_at AS updatedAt;
       `,
         [group.name, group.handle ?? toKebab(group.name)],
       )
@@ -82,6 +82,7 @@ class GroupRepository extends Repository {
         `DELETE FROM ${this.tbl_name}
         WHERE id = $1
         RETURNING id, name, handle;`,
+        [id],
       )
     ).rows[0] as Group;
   }
@@ -134,7 +135,7 @@ class UserRepository extends Repository {
   async list(filter?: (user: User) => boolean): Promise<User[]> {
     return (
       await this.exec(`
-      SELECT id, name, email
+      SELECT id, name, email, created_at AS createdAt, updated_at AS updatedAt
       FROM ${this.tbl_name};
       `)
     ).rows.filter(filter ?? (() => true));
@@ -146,7 +147,7 @@ class UserRepository extends Repository {
         `
       INSERT INTO ${this.tbl_name} (name, email)
       VALUES ($1, $2)
-      RETURNING id, name, email;
+      RETURNING id, name, email, created_at AS createdAt, updated_at AS updatedAt;
       `,
         [user.name, user.email],
       )
@@ -156,7 +157,7 @@ class UserRepository extends Repository {
   async get(id: UserID): Promise<User | undefined> {
     return (
       await this.exec(
-        `SELECT id, name, email
+        `SELECT id, name, email, created_at AS createdAt, updated_at AS updatedAt
         FROM ${this.tbl_name}
         WHERE id = $1;`,
         [id],
