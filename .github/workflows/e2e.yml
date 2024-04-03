@@ -26,6 +26,8 @@ jobs:
       POSTGRES_DB: test
       POSTGRES_HOST: "0.0.0.0"
       POSTGRES_PORT: "5433"
+      APP_HOST: "0.0.0.0"
+      APP_PORT: "3000"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
