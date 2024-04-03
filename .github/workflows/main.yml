@@ -2,10 +2,10 @@ name: Main CI/CD
 on: [push]
 jobs:
   lint:
-    uses: ./.github/actions/lint
+    uses: ./.github/workflows/lint
   test:
     needs: lint
-    uses: ./.github/actions/test
+    uses: ./.github/workflows/test
   build:
     needs: test
-    uses: ./.github/actions/build
+    uses: ./.github/workflows/build
