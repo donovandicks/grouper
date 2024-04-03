@@ -47,19 +47,19 @@ export class GroupService {
     return this.db.deleteGroup(id);
   }
 
-  addMemberToGroup(group: GroupID, user: UserID) {
+  async addMemberToGroup(group: GroupID, user: UserID): Promise<void> {
     if (this.ac.userExcludedFromGroup(group, user)) {
       return;
     }
 
-    this.db.addGroupMember(group, user);
+    await this.db.addGroupMember(group, user);
   }
 
-  removeMemberFromGroup(group: GroupID, user: UserID) {
+  async removeMemberFromGroup(group: GroupID, user: UserID): Promise<void> {
     if (this.ac.userAllowedInGroup(group, user)) {
       return;
     }
 
-    this.db.removeGroupMember(group, user);
+    await this.db.removeGroupMember(group, user);
   }
 }

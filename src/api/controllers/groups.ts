@@ -13,17 +13,19 @@ export class GroupsController {
   }
 
   registerRoutes(app: Express) {
+    /* eslint-disable @typescript-eslint/no-misused-promises */
     app.post("/groups", this.createGroup.bind(this));
     app.get("/groups", this.listGroups.bind(this));
     app.get("/groups/:id", this.getGroup.bind(this));
     app.get("/groups/:id/members", this.getGroupMembers.bind(this));
     app.post("/groups/:id/members", this.addGroupMember.bind(this));
     app.delete("/groups/:groupId/members/:memberId", this.removeGroupMember.bind(this));
+    /* eslint-enable @typescript-eslint/no-misused-promises */
   }
 
-  async createGroup(req: Request<CreateGroupDTO>, res: Response<GroupDTO>) {
+  async createGroup(req: Request, res: Response<GroupDTO>) {
     try {
-      const group = await this.gs.createGroup(req.body);
+      const group = await this.gs.createGroup(req.body as CreateGroupDTO);
       logger.info({ id: group.id }, "successfully created group");
       res.json(group).status(201);
     } catch (err) {
@@ -66,7 +68,7 @@ export class GroupsController {
 
   async getGroupMembers(req: Request, res: Response) {
     try {
-      const members = this.gs.getGroupMembers(req.params?.id as GroupID);
+      const members = await this.gs.getGroupMembers(req.params?.id as GroupID);
 
       if (members === undefined) {
         throw new ErrorNotFound();
@@ -85,9 +87,9 @@ export class GroupsController {
     }
   }
 
-  async addGroupMember(req: Request<{ id: GroupID }, any, { userId: UserID }>, res: Response) {
+  async addGroupMember(req: Request<{ id: GroupID }, Response, { userId: UserID }>, res: Response) {
     try {
-      this.gs.addMemberToGroup(req.params?.id, req.body?.userId);
+      await this.gs.addMemberToGroup(req.params?.id, req.body?.userId);
       res.sendStatus(200);
     } catch (err) {
       console.error("failed to add member to group", err);
@@ -97,7 +99,7 @@ export class GroupsController {
 
   async removeGroupMember(req: Request<{ groupId: GroupID; memberId: UserID }>, res: Response) {
     try {
-      this.gs.removeMemberFromGroup(req.params?.groupId, req.params?.memberId);
+      await this.gs.removeMemberFromGroup(req.params?.groupId, req.params?.memberId);
       res.sendStatus(200);
     } catch (err) {
       console.error("failed to remove user from group", err);

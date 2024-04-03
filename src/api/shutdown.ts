@@ -12,7 +12,9 @@ export const registerGracefulShutdownHandlers = (pool: Pool) => {
   for (const sig of killSignals) {
     process.on(sig, () => {
       logger.info(`Received ${sig} signal. Starting graceful shutdown...`);
-      shutdownHandler(pool);
+      shutdownHandler(pool).catch((err: Error) =>
+        logger.fatal({ err }, "failed to exit gracefully"),
+      );
     });
   }
 };

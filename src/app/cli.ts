@@ -1,4 +1,4 @@
-import { GroupID } from "../domain/index";
+import { GroupID, UserID } from "../domain/index";
 import { addGroupMember } from "../lib/add-group-member";
 import { createUser } from "../lib/create-user";
 import { deleteUser } from "../lib/delete-user";
@@ -6,7 +6,7 @@ import { getGroupMembers } from "../lib/get-group-members";
 import { createGroup, getGroup, listGroups } from "../lib/index";
 import { listUsers } from "../lib/list-users";
 import { removeGroupMember } from "../lib/remove-group-member";
-import { initLogger } from "../utils/telemtery";
+import { initLogger, logger } from "../utils/telemtery";
 import { program } from "commander";
 
 initLogger("local");
@@ -26,7 +26,7 @@ usersCommand.command("list").action(() => listUsers());
 usersCommand
   .command("delete")
   .argument("<user-id>")
-  .action((userId) => deleteUser(userId));
+  .action((userId: UserID) => deleteUser(userId));
 
 const groupsCommand = program.command("groups").description("Manage group entities");
 
@@ -57,7 +57,7 @@ groupMembersCommand
   .command("add")
   .argument("<group-id>")
   .argument("<user-id>")
-  .action((groupId, userId) => addGroupMember({ groupId, userId }));
+  .action((groupId: GroupID, userId: UserID) => addGroupMember({ groupId, userId }));
 
 groupMembersCommand
   .command("list")
@@ -68,10 +68,10 @@ groupMembersCommand
   .command("remove")
   .argument("<group-id>")
   .argument("<user-id>")
-  .action((groupId, userId) => removeGroupMember({ groupId, userId }));
+  .action((groupId: GroupID, userId: UserID) => removeGroupMember({ groupId, userId }));
 
 async function main() {
   await program.parseAsync();
 }
 
-main();
+main().catch((err: Error) => logger.fatal({ err }, "failed to execute command"));

@@ -103,7 +103,7 @@ class GroupMemberRepository extends Repository {
       `,
         [groupId],
       )
-    ).rows.map((r) => r?.user_id) as UserID[];
+    ).rows.map((r: { user_id: string }) => r.user_id as UserID);
   }
 
   async addGroupMember(groupId: GroupID, userId: UserID): Promise<void> {
@@ -138,7 +138,7 @@ class UserRepository extends Repository {
       SELECT id, name, email, created_at AS createdAt, updated_at AS updatedAt
       FROM ${this.tbl_name};
       `)
-    ).rows.filter(filter ?? (() => true));
+    ).rows.filter(filter ?? (() => true)) as User[];
   }
 
   async create(user: CreateUserDTO): Promise<User> {
@@ -195,11 +195,11 @@ export class PostgresDatastore implements Datastore {
   }
 
   async addGroupMember(group: GroupID, user: UserID): Promise<void> {
-    this.groupMembers.addGroupMember(group, user);
+    await this.groupMembers.addGroupMember(group, user);
   }
 
   async removeGroupMember(group: GroupID, user: UserID): Promise<void> {
-    this.groupMembers.removeGroupMember(group, user);
+    await this.groupMembers.removeGroupMember(group, user);
   }
 
   // Groups //

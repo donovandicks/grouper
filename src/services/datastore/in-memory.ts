@@ -24,21 +24,21 @@ class GroupRepository {
       updatedAt: new Date(),
     };
     this.groups.set(id, g);
-    return g;
+    return Promise.resolve(g);
   }
 
   async get(id: GroupID): Promise<Group | undefined> {
-    return this.groups.get(id);
+    return Promise.resolve(this.groups.get(id));
   }
 
   async list(): Promise<Group[]> {
-    return [...this.groups.values()];
+    return Promise.resolve([...this.groups.values()]);
   }
 
   async delete(id: GroupID): Promise<Group | undefined> {
     const existing = this.groups.get(id);
     this.groups.delete(id);
-    return existing;
+    return Promise.resolve(existing);
   }
 }
 
@@ -49,7 +49,7 @@ class UserRepository {
     this.users = new Map();
   }
 
-  async create(user: CreateUserDTO): Promise<User> {
+  create(user: CreateUserDTO): Promise<User> {
     const u = {
       ...user,
       id: randomUUID(),
@@ -57,21 +57,21 @@ class UserRepository {
       updatedAt: new Date(),
     };
     this.users.set(u.id, u);
-    return u;
+    return Promise.resolve(u);
   }
 
   async get(id: UserID): Promise<User | undefined> {
-    return this.users.get(id);
+    return Promise.resolve(this.users.get(id));
   }
 
   async list(filter?: (user: User) => boolean): Promise<User[]> {
-    return [...this.users.values()].filter(filter ?? (() => true));
+    return Promise.resolve([...this.users.values()].filter(filter ?? (() => true)));
   }
 
   async delete(id: UserID): Promise<User | undefined> {
     const existing = this.users.get(id);
     this.users.delete(id);
-    return existing;
+    return Promise.resolve(existing);
   }
 }
 
@@ -84,6 +84,7 @@ class GroupMemberRepository {
 
   async addGroupMember(groupId: GroupID, userId: UserID) {
     this.members.set(randomUUID(), { groupId, userId });
+    return Promise.resolve();
   }
 
   async removeGroupMember(groupId: GroupID, userId: UserID) {
@@ -93,10 +94,13 @@ class GroupMemberRepository {
     if (entryId) {
       this.members.delete(entryId[0]);
     }
+    return Promise.resolve();
   }
 
   async getGroupMembers(groupId: GroupID): Promise<UserID[]> {
-    return [...this.members.values()].filter((o) => o.groupId === groupId).map((o) => o.userId);
+    return Promise.resolve(
+      [...this.members.values()].filter((o) => o.groupId === groupId).map((o) => o.userId),
+    );
   }
 }
 
@@ -112,11 +116,11 @@ export class InMemoryDatastore implements Datastore {
   }
 
   async removeGroupMember(group: GroupID, user: UserID): Promise<void> {
-    this.groupMembers.removeGroupMember(group, user);
+    await this.groupMembers.removeGroupMember(group, user);
   }
 
   async addGroupMember(group: GroupID, user: UserID): Promise<void> {
-    this.groupMembers.addGroupMember(group, user);
+    await this.groupMembers.addGroupMember(group, user);
   }
 
   async getGroupMembers(group: GroupID): Promise<User[]> {

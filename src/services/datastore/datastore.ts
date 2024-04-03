@@ -5,7 +5,7 @@ export interface Datastore {
   // Members
   getGroupMembers(group: GroupID): Promise<User[]>;
   addGroupMember(group: GroupID, user: UserID): Promise<void>;
-  removeGroupMember(group: GroupID, user: UserID): void;
+  removeGroupMember(group: GroupID, user: UserID): Promise<void>;
 
   // Groups
   createGroup(group: CreateGroupDTO): Promise<Group>;

@@ -15,7 +15,7 @@ const TestConfig = {
 const expectedTables = ["tbl_users", "tbl_audit", "tbl_group_members", "tbl_groups"];
 
 describe("postgres integration tests", () => {
-  beforeAll(async () => {
+  beforeAll(() => {
     pool = new Pool(TestConfig);
   });
 
@@ -41,7 +41,9 @@ describe("postgres integration tests", () => {
     ).rows;
 
     expect(tbls.length).toEqual(expectedTables.length);
-    expect(tbls.every((tbl) => expectedTables.includes(tbl.name))).toBe(true);
+    expect(
+      tbls.every((tbl: { schema: string; name: string }) => expectedTables.includes(tbl.name)),
+    ).toBe(true);
 
     const downResult = await runMigrations(TestConfig, "down");
     expect(downResult).toBe(true);

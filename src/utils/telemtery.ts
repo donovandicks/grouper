@@ -20,6 +20,6 @@ export const initLogger = (env: "local"): Logger<never> => {
       logger = pino(localConfig.options, localConfig.destination);
       return logger;
     default:
-      throw new Error(`No logger configured for '${env}'`);
+      throw new Error("No logger configured for environment");
   }
 };

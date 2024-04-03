@@ -13,13 +13,18 @@ export class UsersController {
   }
 
   registerRoutes(app: Express) {
+    /* eslint-disable @typescript-eslint/no-misused-promises */
     app.delete("/users/:id", this.deleteUser.bind(this));
     app.get("/users/:id", this.getUser.bind(this));
     app.get("/users", this.listUsers.bind(this));
     app.post("/users", this.createUser.bind(this));
+    /* eslint-enable @typescript-eslint/no-misused-promises */
   }
 
-  async deleteUser(req: Request<{ id: UserID }>, res: Response<UserDTO | {}>) {
+  async deleteUser(
+    req: Request<{ id: UserID }>,
+    res: Response<UserDTO | ErrorMessage | Record<string, never>>,
+  ) {
     try {
       logger.info({ id: req.params.id }, "received user delete request");
       const deleted = (await this.us.deleteUser(req.params.id)) ?? {};
@@ -58,10 +63,9 @@ export class UsersController {
     }
   }
 
-  async createUser(req: Request<CreateUserDTO>, res: Response<UserDTO | ErrorMessage>) {
+  async createUser(req: Request, res: Response<UserDTO | ErrorMessage>) {
     try {
-      logger.info({ body: req.body }, "received user create request");
-      const user = await this.us.createUser(req.body);
+      const user = await this.us.createUser(req.body as CreateUserDTO);
       res.json(user).status(201);
     } catch (err) {
       logger.error({ err }, "failed to create new user");
