@@ -1,12 +1,35 @@
-name: Unit Test
+name: Tests
 on: [push]
 jobs:
-  unit-test:
+  integration:
+    services:
+      postgres16:
+        image: postgres:16
+        env:
+          POSTGRES_DB: test
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '21'
+          node-version: "21"
       - run: npm i
-      - run: npm run test
+      - run: npm run test:integration
+
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "21"
+      - run: npm i
+      - run: npm run test:unit
