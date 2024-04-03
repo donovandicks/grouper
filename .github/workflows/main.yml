@@ -1,0 +1,11 @@
+name: Main CI/CD
+on: [push]
+jobs:
+  lint:
+    uses: ./.github/workflows/actions/lint
+  test:
+    needs: lint
+    uses: ./.github/workflows/actions/test
+  build:
+    needs: test
+    uses: ./.github/workflows/actions/build
