@@ -34,7 +34,9 @@ groupsCommand
   .command("create")
   .description("Create a group")
   .option("-n, --name <name>", "group name")
-  .action((opts: { name: string }) => createGroup(opts));
+  .action((opts: { name: string }) => {
+    createGroup(opts).catch((err: Error) => logger.error(err));
+  });
 
 groupsCommand
   .command("list")
@@ -45,7 +47,9 @@ groupsCommand
   .command("get")
   .description("Get a group by its ID")
   .argument("<id>")
-  .action((id: string) => getGroup(id));
+  .action((id: string) => {
+    getGroup(id).catch((err: Error) => logger.error(err));
+  });
 
 const groupCommand = program.command("group").description("Manage a single group");
 

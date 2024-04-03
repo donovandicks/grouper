@@ -1,0 +1,39 @@
+name: End2End Test Workflow
+
+on:
+  workflow_call:
+
+jobs:
+  e2e:
+    services:
+      postgres16:
+        image: postgres:16
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: test
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    runs-on: ubuntu-latest
+    env:
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: test
+      POSTGRES_HOST: "0.0.0.0"
+      POSTGRES_PORT: "5433"
+      APP_HOST: "0.0.0.0"
+      APP_PORT: "3000"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "21"
+      - run: npm i
+      - run: npm run build
+      - run: node ./dist/index.js &
+      - run: npm run test:e2e

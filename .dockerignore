@@ -1,5 +1,6 @@
 **/node_modules
 **/*test*
+**/*spec*
 src/app/
 src/lib/
 dist/

@@ -7,7 +7,8 @@
     "lint:ci": "npx prettier . --check && npx eslint . && tsc --project tsconfig.json --noEmit",
     "format": "npx prettier . --write",
     "test:unit": "npx jest --config jest.unit.config.json .",
-    "test:integration": "npx jest --config jest.integration.config.json ."
+    "test:integration": "npx jest --config jest.integration.config.json .",
+    "test:e2e": "npx jest --config jest.e2e.config.json"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",

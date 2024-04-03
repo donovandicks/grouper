@@ -10,14 +10,25 @@ export type LoggingConfig = {
 export const localConfig: LoggingConfig = {
   options: {
     transport: { target: "pino-pretty", options: { colorize: true } },
+    level: "debug",
   },
   destination: pino.destination({ maxLength: 4096, sync: false }),
 };
 
-export const initLogger = (env: "local"): Logger<never> => {
+export const testConfig: LoggingConfig = {
+  options: {
+    transport: { target: "pino-pretty", options: { colorize: true } },
+    level: "error",
+  },
+};
+
+export const initLogger = (env: "local" | "test"): Logger<never> => {
   switch (env) {
     case "local":
       logger = pino(localConfig.options, localConfig.destination);
+      return logger;
+    case "test":
+      logger = pino(testConfig.options);
       return logger;
     default:
       throw new Error("No logger configured for environment");
