@@ -3,8 +3,8 @@ import { Pool } from "pg";
 
 const killSignals = ["SIGINT", "SIGTERM"];
 
-const shutdownHandler = (pool: Pool) => {
-  pool.end();
+const shutdownHandler = async (pool: Pool) => {
+  await pool.end();
   process.exit(0);
 };
 

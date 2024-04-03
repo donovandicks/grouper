@@ -1,4 +1,4 @@
-import { config, runMigrations } from "../config/database";
+import { Config, runMigrations } from "../config/database";
 import { InMemoryAc } from "../services/access-control";
 import { Datastore, PostgresDatastore } from "../services/datastore";
 import { GroupService } from "../services/group/group-service";
@@ -13,7 +13,7 @@ import httpLogger from "pino-http";
 
 initLogger("local");
 
-const pool = new Pool(config);
+const pool = new Pool(Config);
 const db: Datastore = new PostgresDatastore(pool);
 const ac = new InMemoryAc();
 
@@ -29,7 +29,10 @@ app.use(express.json(), httpLogger({ logger }));
 export async function main() {
   registerGracefulShutdownHandlers(pool);
 
-  await runMigrations();
+  if (!(await runMigrations())) {
+    await pool.end();
+    return;
+  }
 
   uc.registerRoutes(app);
   gc.registerRoutes(app);
