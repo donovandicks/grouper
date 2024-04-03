@@ -30,7 +30,7 @@ export async function main() {
   registerGracefulShutdownHandlers(pool);
 
   if (!(await runMigrations())) {
-    pool.end();
+    await pool.end();
     return;
   }
 
