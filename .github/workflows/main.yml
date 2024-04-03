@@ -2,10 +2,10 @@ name: Main CI/CD
 on: [push]
 jobs:
   lint:
-    uses: ./.github/workflows/lint
+    uses: ./.github/workflows/lint.yml
   test:
     needs: lint
-    uses: ./.github/workflows/test
+    uses: ./.github/workflows/test.yml
   build:
     needs: test
-    uses: ./.github/workflows/build
+    uses: ./.github/workflows/build.yml
