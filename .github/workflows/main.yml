@@ -9,3 +9,6 @@ jobs:
   build:
     needs: test
     uses: ./.github/workflows/build.yml
+  e2e:
+    needs: build
+    uses: ./.github/workflows/e2e.yml
