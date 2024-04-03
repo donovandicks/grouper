@@ -1,3 +1,4 @@
+import { AppConfig } from "../config/contants";
 import { Config, runMigrations } from "../config/database";
 import { InMemoryAc } from "../services/access-control";
 import { Datastore, PostgresDatastore } from "../services/datastore";
@@ -27,6 +28,8 @@ const app = express();
 app.use(express.json(), httpLogger({ logger }));
 
 export async function main() {
+  logger.info({ config: AppConfig }, "starting application");
+
   registerGracefulShutdownHandlers(pool);
 
   if (!(await runMigrations())) {
@@ -34,8 +37,15 @@ export async function main() {
     return;
   }
 
+  logger.info("registering routes");
   uc.registerRoutes(app);
   gc.registerRoutes(app);
 
-  http.createServer(app).listen(3000, "0.0.0.0", () => logger.info("listening on :3000"));
+  logger.info("starting http server");
+  http
+    .createServer(app)
+    .listen(AppConfig.port, AppConfig.host, () =>
+      logger.info(`listening on ${AppConfig.host}:${AppConfig.port}`),
+    )
+    .on("error", (err: Error) => logger.fatal({ err }, "failed to start http server"));
 }
