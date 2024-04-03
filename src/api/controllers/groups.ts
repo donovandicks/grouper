@@ -1,7 +1,7 @@
 import { GroupID, UserID } from "../../domain";
 import { GroupService } from "../../services/group/group-service";
 import { logger } from "../../utils/telemtery";
-import { ErrorNotFound } from "../errors";
+import { ErrorMessage, ErrorNotFound } from "../errors";
 import { CreateGroupDTO, GroupDTO } from "../models";
 import { Express, Request, Response } from "express";
 
@@ -17,6 +17,7 @@ export class GroupsController {
     app.post("/groups", this.createGroup.bind(this));
     app.get("/groups", this.listGroups.bind(this));
     app.get("/groups/:id", this.getGroup.bind(this));
+    app.delete("/groups/:id", this.getGroup.bind(this));
     app.get("/groups/:id/members", this.getGroupMembers.bind(this));
     app.post("/groups/:id/members", this.addGroupMember.bind(this));
     app.delete("/groups/:groupId/members/:memberId", this.removeGroupMember.bind(this));
@@ -44,7 +45,7 @@ export class GroupsController {
     }
   }
 
-  async getGroup(req: Request, res: Response) {
+  async getGroup(req: Request, res: Response<GroupDTO | ErrorMessage>) {
     try {
       const group = await this.gs.getGroup(req.params?.id as GroupID);
 
@@ -52,7 +53,9 @@ export class GroupsController {
         throw new ErrorNotFound();
       }
 
-      res.json(group);
+      const members = await this.gs.getGroupMembers(group.id);
+
+      res.json({ ...group, members: members ?? [] }).status(200);
     } catch (err) {
       if (err instanceof ErrorNotFound) {
         res
