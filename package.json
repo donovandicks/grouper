@@ -4,7 +4,8 @@
     "copy-sql": "mkdir -p dist/src/migrations/sql && cp src/migrations/sql/*.sql dist/src/migrations/sql/",
     "start": "pnpm run build && node dist/index.js",
     "lint": "npx prettier . --check; npx eslint .; tsc --project tsconfig.json --noEmit",
-    "lint-fix": "npx prettier . --write",
+    "lint:ci": "npx prettier . --check && npx eslint . && tsc --project tsconfig.json --noEmit",
+    "format": "npx prettier . --write",
     "test:unit": "npx jest --config jest.unit.config.json .",
     "test:integration": "npx jest --config jest.integration.config.json ."
   },
