@@ -18,7 +18,7 @@ describe("InMemoryDatastore", () => {
     // THEN
     expect(created.name).toEqual("Test");
     expect(created.handle).toEqual("test");
-    expect(created.id.length).toEqual(35);
+    expect(created.id.length).toEqual(36);
     expect(created.createdAt.getDay()).toEqual(new Date().getDay());
     expect(created.updatedAt.getDay()).toEqual(new Date().getDay());
   });
