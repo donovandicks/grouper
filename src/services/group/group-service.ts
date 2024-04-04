@@ -1,7 +1,7 @@
-import { CreateGroupDTO, GroupDTO } from "../../api/models";
-import { Group, GroupID, User, UserID } from "../../domain/index";
-import { AccessController } from "../access-control/index";
-import { Datastore } from "../datastore/index";
+import type { CreateGroupDTO, GroupDTO } from "../../api/models";
+import type { Group, GroupID, User, UserID } from "../../domain/index";
+import type { AccessController } from "../access-control/index";
+import type { Datastore } from "../datastore/index";
 
 export class GroupService {
   ac: AccessController;

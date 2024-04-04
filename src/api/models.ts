@@ -1,4 +1,4 @@
-import { Group, User } from "../domain";
+import type { Group, User } from "../domain";
 
 export type UserDTO = User;
 export type CreateUserDTO = Pick<UserDTO, "name" | "email">;

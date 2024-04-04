@@ -1,4 +1,4 @@
-import { CreateGroupDTO } from "../../api/models";
+import type { CreateGroupDTO } from "../../api/models";
 import { InMemoryDatastore } from "./in-memory";
 
 let ds: InMemoryDatastore;

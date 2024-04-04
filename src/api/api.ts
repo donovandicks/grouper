@@ -1,7 +1,7 @@
 import { AppConfig } from "../config/contants";
 import { Config, runMigrations } from "../config/database";
 import { InMemoryAc } from "../services/access-control";
-import { Datastore, PostgresDatastore } from "../services/datastore";
+import { PostgresDatastore, type Datastore } from "../services/datastore";
 import { GroupService } from "../services/group/group-service";
 import { UserService } from "../services/user/user-service";
 import { initLogger, logger } from "../utils/telemtery";

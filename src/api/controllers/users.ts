@@ -1,9 +1,9 @@
-import { UserID } from "../../domain";
+import type { UserID } from "../../domain";
 import { UserService } from "../../services/user/user-service";
 import { logger } from "../../utils/telemtery";
-import { ERR_INTERNAL_SERVER, ErrorMessage, ErrorNotFound } from "../errors";
-import { CreateUserDTO, UserDTO } from "../models";
-import { Express, Request, Response } from "express";
+import { ERR_INTERNAL_SERVER, ErrorNotFound, type ErrorMessage } from "../errors";
+import type { CreateUserDTO, UserDTO } from "../models";
+import type { Express, Request, Response } from "express";
 
 export class UsersController {
   us: UserService;

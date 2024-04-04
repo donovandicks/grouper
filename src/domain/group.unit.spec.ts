@@ -1,4 +1,4 @@
-import { Group } from "./group";
+import type { Group } from "./group";
 import { randomUUID } from "crypto";
 
 describe("Group Model", () => {

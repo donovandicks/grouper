@@ -1,4 +1,4 @@
-import { GroupID, UserID } from "../domain";
+import type { GroupID, UserID } from "../domain";
 import { logger } from "../utils/telemtery";
 import { GROUPS_BASE_URL, HEADERS } from "./constants";
 

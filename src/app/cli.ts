@@ -1,4 +1,4 @@
-import { GroupID, UserID } from "../domain/index";
+import type { GroupID, UserID } from "../domain/index";
 import { addGroupMember } from "../lib/add-group-member";
 import { createUser } from "../lib/create-user";
 import { deleteUser } from "../lib/delete-user";
@@ -78,4 +78,4 @@ async function main() {
   await program.parseAsync();
 }
 
-main().catch((err: Error) => logger.fatal({ err }, "failed to execute command"));
+await main();

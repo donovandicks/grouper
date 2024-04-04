@@ -1,4 +1,4 @@
-import { GroupDTO } from "../api/models";
+import type { GroupDTO } from "../api/models";
 import { logger } from "../utils/telemtery";
 import { GROUPS_BASE_URL, HEADERS } from "./constants";
 

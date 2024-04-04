@@ -1,6 +1,6 @@
-import { CreateUserDTO } from "../../api/models";
-import { User, UserID } from "../../domain";
-import { Datastore } from "../datastore";
+import type { CreateUserDTO } from "../../api/models";
+import type { User, UserID } from "../../domain";
+import type { Datastore } from "../datastore";
 
 export class UserService {
   db: Datastore;

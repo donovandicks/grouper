@@ -1,7 +1,8 @@
-import { CreateGroupDTO, CreateUserDTO } from "../../api/models";
-import { Group, GroupID, User, UserID } from "../../domain/index";
-import { Datastore } from "./datastore";
-import { UUID, randomUUID } from "crypto";
+import type { CreateGroupDTO, CreateUserDTO } from "../../api/models";
+import type { Group, GroupID, User, UserID } from "../../domain/index";
+import type { Datastore } from "./datastore";
+import type { UUID } from "crypto";
+import { randomUUID } from "crypto";
 
 const toKebab = (raw: string): string => {
   return raw.toLocaleLowerCase().replaceAll(" ", "-");

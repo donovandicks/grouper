@@ -1,8 +1,9 @@
-import { CreateGroupDTO, CreateUserDTO } from "../../api/models";
-import { Group, GroupID, User, UserID } from "../../domain/index";
+import type { CreateGroupDTO, CreateUserDTO } from "../../api/models";
+import type { Group, GroupID, User, UserID } from "../../domain/index";
 import { logger } from "../../utils/telemtery";
-import { Datastore } from "./index";
-import { Pool, PoolClient, QueryResult } from "pg";
+import type { Datastore } from "./index";
+import type { PoolClient, QueryResult } from "pg";
+import { Pool } from "pg";
 
 class Repository {
   pool: Pool;

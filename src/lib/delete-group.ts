@@ -1,5 +1,5 @@
-import { GroupDTO } from "../api/models";
-import { GroupID } from "../domain";
+import type { GroupDTO } from "../api/models";
+import type { GroupID } from "../domain";
 import { logger } from "../utils/telemtery";
 import { GROUPS_BASE_URL, HEADERS } from "./constants";
 

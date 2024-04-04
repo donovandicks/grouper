@@ -1,4 +1,5 @@
-import pino, { Logger, LoggerOptions } from "pino";
+import type { Logger, LoggerOptions } from "pino";
+import pino from "pino";
 
 export let logger: Logger<never>;
 

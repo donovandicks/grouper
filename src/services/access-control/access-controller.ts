@@ -1,5 +1,5 @@
-import { GroupID } from "../../domain/group";
-import { UserID } from "../../domain/user";
+import type { GroupID } from "../../domain/group";
+import type { UserID } from "../../domain/user";
 
 export interface AccessController {
   allowUserInGroup(group: GroupID, user: UserID): void;
