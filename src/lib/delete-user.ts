@@ -1,4 +1,4 @@
-import { UserID } from "../domain";
+import type { UserID } from "../domain";
 import { logger } from "../utils/telemtery";
 import { HEADERS, USERS_BASE_URL } from "./constants";
 

@@ -6,9 +6,6 @@ jobs:
   test:
     needs: lint
     uses: ./.github/workflows/test.yml
-  build:
-    needs: test
-    uses: ./.github/workflows/build.yml
   e2e:
-    needs: build
+    needs: test
     uses: ./.github/workflows/e2e.yml

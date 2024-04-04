@@ -1,28 +1,27 @@
 {
   "scripts": {
-    "build": "tsc --project tsconfig.json && npm run copy-sql",
+    "build": "tsc --project tsconfig.json && bun run copy-sql",
     "copy-sql": "mkdir -p dist/src/migrations/sql && cp src/migrations/sql/*.sql dist/src/migrations/sql/",
-    "start": "pnpm run build && node dist/index.js",
+    "start": "bun run index.ts",
     "lint": "npx prettier . --check; npx eslint .; tsc --project tsconfig.json --noEmit",
     "lint:ci": "npx prettier . --check && npx eslint . && tsc --project tsconfig.json --noEmit",
     "format": "npx prettier . --write",
-    "test:unit": "npx jest --config jest.unit.config.json .",
-    "test:integration": "npx jest --config jest.integration.config.json .",
-    "test:e2e": "npx jest --config jest.e2e.config.json"
+    "test:unit": "bun test src/__tests__/unit",
+    "test:integration": "bun test src/__tests__/integration",
+    "test:e2e": "bun test src/__tests__/e2e",
+    "buntest": "echo 'hello'"
   },
   "devDependencies": {
-    "@jest/globals": "^29.7.0",
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "@types/bun": "latest",
     "@types/express": "^4.17.21",
-    "@types/jest": "^29.5.12",
     "@types/node": "^20.11.30",
     "@types/pg": "^8.11.4",
     "@typescript-eslint/eslint-plugin": "^7.5.0",
     "@typescript-eslint/parser": "^7.5.0",
+    "bun-types": "^1.1.1",
     "eslint": "^8.57.0",
-    "jest": "^29.7.0",
-    "prettier": "^3.2.5",
-    "ts-jest": "^29.1.2"
+    "prettier": "^3.2.5"
   },
   "dependencies": {
     "commander": "^12.0.0",
@@ -33,5 +32,11 @@
     "pino": "^8.19.0",
     "pino-http": "^9.0.0",
     "pino-pretty": "^11.0.0"
+  },
+  "name": "grouper",
+  "module": "index.ts",
+  "type": "module",
+  "peerDependencies": {
+    "typescript": "^5.0.0"
   }
 }

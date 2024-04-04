@@ -1,6 +1,6 @@
-import { GroupID } from "../../domain/group";
-import { UserID } from "../../domain/user";
-import { AccessController } from "./access-controller";
+import type { GroupID } from "../../domain/group";
+import type { UserID } from "../../domain/user";
+import type { AccessController } from "./access-controller";
 
 type AccessControlList = Map<GroupID, Set<UserID>>;
 

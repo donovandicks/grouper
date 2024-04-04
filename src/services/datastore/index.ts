@@ -1,2 +1,2 @@
-export { Datastore } from "./datastore";
+export type { Datastore } from "./datastore";
 export { PostgresDatastore } from "./postgres";

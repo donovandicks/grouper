@@ -1,5 +1,5 @@
-import { CreateGroupDTO, CreateUserDTO } from "../../api/models";
-import { Group, GroupID, User, UserID } from "../../domain/index";
+import type { CreateGroupDTO, CreateUserDTO } from "../../api/models";
+import type { Group, GroupID, User, UserID } from "../../domain/index";
 
 export interface Datastore {
   // Members

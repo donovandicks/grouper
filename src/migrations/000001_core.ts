@@ -1,5 +1,5 @@
 import { readFileSync } from "fs";
-import { MigrationBuilder } from "node-pg-migrate";
+import type { MigrationBuilder } from "node-pg-migrate";
 import { basename, extname, join, resolve } from "path";
 
 const basePath = join(join(resolve(__dirname), "sql"), basename(__filename, extname(__filename)));

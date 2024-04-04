@@ -1,9 +1,9 @@
-import { GroupID, UserID } from "../../domain";
+import type { GroupID, UserID } from "../../domain";
 import { GroupService } from "../../services/group/group-service";
 import { logger } from "../../utils/telemtery";
-import { ErrorMessage, ErrorNotFound } from "../errors";
-import { CreateGroupDTO, GroupDTO } from "../models";
-import { Express, Request, Response } from "express";
+import { ErrorNotFound, type ErrorMessage } from "../errors";
+import type { CreateGroupDTO, GroupDTO } from "../models";
+import type { Express, Request, Response } from "express";
 
 export class GroupsController {
   gs: GroupService;

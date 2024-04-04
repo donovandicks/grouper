@@ -1,7 +1,7 @@
 import { logger } from "../utils/telemtery";
 import migrate from "node-pg-migrate";
 import { join, resolve } from "path";
-import { ClientConfig } from "pg";
+import type { ClientConfig } from "pg";
 
 export const Config: ClientConfig = {
   user: process.env["POSTGRES_USER"],
