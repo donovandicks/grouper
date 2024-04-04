@@ -1,8 +1,8 @@
 {
   "scripts": {
-    "build": "tsc --project tsconfig.json && npm run copy-sql",
+    "build": "tsc --project tsconfig.json && bun run copy-sql",
     "copy-sql": "mkdir -p dist/src/migrations/sql && cp src/migrations/sql/*.sql dist/src/migrations/sql/",
-    "start": "pnpm run build && node dist/index.js",
+    "start": "bun run index.ts",
     "lint": "npx prettier . --check; npx eslint .; tsc --project tsconfig.json --noEmit",
     "lint:ci": "npx prettier . --check && npx eslint . && tsc --project tsconfig.json --noEmit",
     "format": "npx prettier . --write",
