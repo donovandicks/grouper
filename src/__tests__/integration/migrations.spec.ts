@@ -1,5 +1,6 @@
 import { runMigrations } from "../../config/database";
 import { initLogger } from "../../utils/telemtery";
+import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { Pool } from "pg";
 
 initLogger("local");

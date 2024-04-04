@@ -1,6 +1,7 @@
 import { createGroup, getGroup } from "../../lib";
 import { deleteGroup } from "../../lib/delete-group";
 import { initLogger } from "../../utils/telemtery";
+import { beforeAll, describe, expect, it } from "bun:test";
 
 describe("end to end suite", () => {
   beforeAll(() => {
