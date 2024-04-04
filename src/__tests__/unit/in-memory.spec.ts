@@ -1,5 +1,6 @@
 import type { CreateGroupDTO } from "../../api/models";
-import { InMemoryDatastore } from "./in-memory";
+import { InMemoryDatastore } from "../../services/datastore/in-memory";
+import { beforeEach, describe, expect, it } from "bun:test";
 
 let ds: InMemoryDatastore;
 

@@ -1,6 +1,6 @@
-import { createGroup, getGroup } from "../lib";
-import { deleteGroup } from "../lib/delete-group";
-import { initLogger } from "../utils/telemtery";
+import { createGroup, getGroup } from "../../lib";
+import { deleteGroup } from "../../lib/delete-group";
+import { initLogger } from "../../utils/telemtery";
 
 describe("end to end suite", () => {
   beforeAll(() => {

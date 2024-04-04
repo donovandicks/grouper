@@ -1,5 +1,5 @@
-import { initLogger } from "../utils/telemtery";
-import { runMigrations } from "./database";
+import { runMigrations } from "../../config/database";
+import { initLogger } from "../../utils/telemtery";
 import { Pool } from "pg";
 
 initLogger("local");

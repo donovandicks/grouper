@@ -1,4 +1,5 @@
-import type { Group } from "./group";
+import type { Group } from "../../domain/group";
+import { describe, expect, it } from "bun:test";
 import { randomUUID } from "crypto";
 
 describe("Group Model", () => {
