@@ -13,6 +13,7 @@ services:
       - POSTGRES_DB=grouper
       - POSTGRES_HOST=database
       - POSTGRES_PORT=5432
+      - APP_PORT=3000
     depends_on:
       database:
         condition: service_healthy
