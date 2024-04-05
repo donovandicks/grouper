@@ -17,7 +17,7 @@ export class GroupsController {
     app.post("/groups", this.createGroup.bind(this));
     app.get("/groups", this.listGroups.bind(this));
     app.get("/groups/:id", this.getGroup.bind(this));
-    app.delete("/groups/:id", this.getGroup.bind(this));
+    app.delete("/groups/:id", this.deleteGroup.bind(this));
     app.get("/groups/:id/members", this.getGroupMembers.bind(this));
     app.post("/groups/:id/members", this.addGroupMember.bind(this));
     app.delete("/groups/:groupId/members/:memberId", this.removeGroupMember.bind(this));
@@ -105,7 +105,17 @@ export class GroupsController {
       await this.gs.removeMemberFromGroup(req.params?.groupId, req.params?.memberId);
       res.sendStatus(200);
     } catch (err) {
-      console.error("failed to remove user from group", err);
+      logger.error(err, "failed to remove user from group");
+      res.sendStatus(500);
+    }
+  }
+
+  async deleteGroup(req: Request, res: Response<GroupDTO | Record<string, never> | ErrorMessage>) {
+    try {
+      const group = (await this.gs.deleteGroup(req.params?.id as GroupID)) ?? {};
+      res.json(group).status(200);
+    } catch (err) {
+      logger.error(err, "failed to delete group");
       res.sendStatus(500);
     }
   }
