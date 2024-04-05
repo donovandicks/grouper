@@ -6,9 +6,9 @@
     "copy-sql": "mkdir -p dist/src/migrations/sql && cp src/migrations/sql/*.sql dist/src/migrations/sql/",
     "start": "bun run ./src/index.ts",
     "start:bg": "bun run ./src/index.ts &",
-    "lint": "npx prettier . --check; npx eslint .; tsc --project tsconfig.json --noEmit",
-    "lint:ci": "npx prettier . --check && npx eslint . && tsc --project tsconfig.json --noEmit",
-    "format": "npx prettier . --write",
+    "lint": "bun x prettier . --check; bun x eslint .; tsc --project tsconfig.json --noEmit",
+    "lint:ci": "bun x prettier . --check && bun x eslint . && tsc --project tsconfig.json --noEmit",
+    "format": "bun x prettier . --write",
     "test:unit": "bun test src/__tests__/unit",
     "test:integration": "bun test src/__tests__/integration",
     "test:e2e": "bun test src/__tests__/e2e",
@@ -37,6 +37,12 @@
     "pino": "^8.19.0",
     "pino-http": "^9.0.0",
     "pino-pretty": "^11.0.0"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "bun x prettier --check",
+      "bun x eslint"
+    ]
   },
   "name": "grouper",
   "module": "index.ts",
