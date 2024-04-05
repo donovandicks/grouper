@@ -11,7 +11,8 @@
     "format": "npx prettier . --write",
     "test:unit": "bun test src/__tests__/unit",
     "test:integration": "bun test src/__tests__/integration",
-    "test:e2e": "bun test src/__tests__/e2e"
+    "test:e2e": "bun test src/__tests__/e2e",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
@@ -28,6 +29,8 @@
   "dependencies": {
     "commander": "^12.0.0",
     "express": "^4.19.2",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2",
     "node-fetch": "^3.3.2",
     "node-pg-migrate": "^6.2.2",
     "pg": "^8.11.3",
