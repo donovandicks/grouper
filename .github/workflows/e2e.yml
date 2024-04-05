@@ -34,5 +34,5 @@ jobs:
         with:
           bun-version: "1.1.1"
       - run: bun install --production
-      - run: bun run index.ts &
+      - run: bun run start:bg
       - run: bun run test:e2e

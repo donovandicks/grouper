@@ -4,14 +4,14 @@
     "build:cli": "bun build ./src/cli/index.ts --compile --outfile=./cli",
     "clean": "rm -rf .*.bun-build ./dist",
     "copy-sql": "mkdir -p dist/src/migrations/sql && cp src/migrations/sql/*.sql dist/src/migrations/sql/",
-    "start": "bun run index.ts",
+    "start": "bun run ./src/index.ts",
+    "start:bg": "bun run ./src/index.ts &",
     "lint": "npx prettier . --check; npx eslint .; tsc --project tsconfig.json --noEmit",
     "lint:ci": "npx prettier . --check && npx eslint . && tsc --project tsconfig.json --noEmit",
     "format": "npx prettier . --write",
     "test:unit": "bun test src/__tests__/unit",
     "test:integration": "bun test src/__tests__/integration",
-    "test:e2e": "bun test src/__tests__/e2e",
-    "buntest": "echo 'hello'"
+    "test:e2e": "bun test src/__tests__/e2e"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",

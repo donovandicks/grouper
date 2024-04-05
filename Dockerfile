@@ -13,11 +13,10 @@ RUN bun install --production
 FROM builder AS runner
 
 # Copy the rest of the application code
-COPY ./index.ts .
 COPY ./src ./src
 
 # Expose port
 EXPOSE 3001
 
 # Command to run the app
-CMD ["bun", "run", "./index.ts"]
+CMD ["bun", "run", "./src/index.ts"]
