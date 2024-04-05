@@ -1,9 +1,9 @@
-import type { Command } from "commander";
 import type { UserID } from "../domain";
 import { createUser } from "../lib/create-user";
 import { deleteUser } from "../lib/delete-user";
 import { getUser } from "../lib/get-user";
 import { listUsers } from "../lib/list-users";
+import type { Command } from "commander";
 
 export const registerUserCommands = (program: Command) => {
   const usersCommand = program.command("users").description("Manage user entities");

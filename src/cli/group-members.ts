@@ -1,11 +1,15 @@
-import type { Command } from "commander";
 import type { GroupID, UserID } from "../domain";
 import { addGroupMember } from "../lib/add-group-member";
 import { getGroupMembers } from "../lib/get-group-members";
 import { removeGroupMember } from "../lib/remove-group-member";
+import type { Command } from "commander";
 
 export const registerGroupMemberCommands = (program: Command) => {
-  const groupMembersCommand = program.command("group").description("Manage a single group").command("members").description("Manage the members of a single group");
+  const groupMembersCommand = program
+    .command("group")
+    .description("Manage a single group")
+    .command("members")
+    .description("Manage the members of a single group");
 
   groupMembersCommand
     .command("add")
@@ -25,5 +29,4 @@ export const registerGroupMemberCommands = (program: Command) => {
     .argument("<group-id>")
     .argument("<user-id>")
     .action((groupId: GroupID, userId: UserID) => removeGroupMember({ groupId, userId }));
-
 };

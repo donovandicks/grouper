@@ -1,7 +1,7 @@
-import type { Command } from "commander";
 import type { GroupID } from "../domain";
 import { createGroup, getGroup, listGroups } from "../lib";
 import { deleteGroup } from "../lib/delete-group";
+import type { Command } from "commander";
 
 export const registerGroupCommands = (program: Command) => {
   const groupsCommand = program.command("groups").description("Manage group entities");
@@ -36,6 +36,4 @@ export const registerGroupCommands = (program: Command) => {
     .action(async (id: GroupID) => {
       await deleteGroup(id);
     });
-
-
 };

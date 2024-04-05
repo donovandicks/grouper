@@ -1,8 +1,8 @@
-import { program } from "commander";
 import { initLogger } from "../utils/telemtery";
 import { registerGroupMemberCommands } from "./group-members";
 import { registerGroupCommands } from "./groups";
 import { registerUserCommands } from "./users";
+import { program } from "commander";
 
 initLogger("local");
 
