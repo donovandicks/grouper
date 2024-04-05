@@ -112,8 +112,14 @@ export class GroupsController {
 
   async deleteGroup(req: Request, res: Response<GroupDTO | Record<string, never> | ErrorMessage>) {
     try {
-      const group = (await this.gs.deleteGroup(req.params?.id as GroupID)) ?? {};
-      res.json(group).status(200);
+      const group = await this.gs.deleteGroup(req.params?.id as GroupID);
+
+      if (group) {
+        res.json({ ...group, members: [] }).status(200);
+        return;
+      }
+
+      res.json({}).status(200);
     } catch (err) {
       logger.error(err, "failed to delete group");
       res.sendStatus(500);

@@ -82,7 +82,7 @@ class GroupRepository extends Repository {
       await this.exec(
         `DELETE FROM ${this.tbl_name}
         WHERE id = $1
-        RETURNING id, name, handle;`,
+        RETURNING id, name, handle, created_at AS createdAt, updated_at AS updatedAt;`,
         [id],
       )
     ).rows[0] as Group;
