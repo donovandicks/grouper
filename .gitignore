@@ -1,4 +1,5 @@
 node_modules/
 dist/
-cli
 *.bun-build
+cli
+!/src/cli

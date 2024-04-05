@@ -1,6 +1,7 @@
 {
   "scripts": {
     "build": "tsc --project tsconfig.json && bun run copy-sql",
+    "build:cli": "bun build ./src/cli/index.ts --compile --outfile=./cli",
     "copy-sql": "mkdir -p dist/src/migrations/sql && cp src/migrations/sql/*.sql dist/src/migrations/sql/",
     "start": "bun run index.ts",
     "lint": "npx prettier . --check; npx eslint .; tsc --project tsconfig.json --noEmit",
