@@ -1,5 +1,6 @@
 import type { Logger, LoggerOptions } from "pino";
 import pino from "pino";
+import PinoPretty from "pino-pretty";
 
 export let logger: Logger<never>;
 
@@ -10,17 +11,16 @@ export type LoggingConfig = {
 
 export const localConfig: LoggingConfig = {
   options: {
-    transport: { target: "pino-pretty", options: { colorize: true } },
     level: "debug",
   },
-  destination: pino.destination({ maxLength: 4096, sync: false }),
+  destination: PinoPretty({ sync: false, colorize: true }),
 };
 
 export const testConfig: LoggingConfig = {
   options: {
-    transport: { target: "pino-pretty", options: { colorize: true } },
     level: "error",
   },
+  destination: PinoPretty({ sync: true, colorize: true }),
 };
 
 export const initLogger = (env: "local" | "test"): Logger<never> => {
