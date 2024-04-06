@@ -33,6 +33,6 @@ jobs:
       - uses: oven-sh/setup-bun@v1
         with:
           bun-version: "1.1.1"
-      - run: bun install --production
+      - run: bun install --production --ignore-scripts
       - run: bun run start:bg
       - run: bun run test:e2e
