@@ -32,10 +32,12 @@ export async function main() {
 
   registerGracefulShutdownHandlers(pool);
 
-  if (!(await runMigrations())) {
+  if (!(await runMigrations(pool))) {
     await pool.end();
     return;
   }
+
+  logger.info("successfully completed database migrations");
 
   logger.info("registering routes");
   uc.registerRoutes(app);
