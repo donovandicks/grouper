@@ -27,7 +27,7 @@ describe("postgres integration tests", () => {
   it("successfully runs migrations", async () => {
     const client = await pool.connect();
 
-    const upResult = await runMigrations(TestConfig);
+    const upResult = await runMigrations(pool);
     expect(upResult).toBe(true);
 
     let tbls = (
@@ -46,7 +46,7 @@ describe("postgres integration tests", () => {
       tbls.every((tbl: { schema: string; name: string }) => expectedTables.includes(tbl.name)),
     ).toBe(true);
 
-    const downResult = await runMigrations(TestConfig, "down");
+    const downResult = await runMigrations(pool, "down");
     expect(downResult).toBe(true);
 
     tbls = (

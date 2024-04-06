@@ -29,7 +29,7 @@ class Migrator {
         continue;
       }
 
-      this.downPaths.push(join(migrationDir, path));
+      this.downPaths.unshift(join(migrationDir, path));
     }
   }
 
@@ -56,8 +56,23 @@ class Migrator {
   }
 
   async down(): Promise<boolean> {
-    await Promise.resolve();
-    throw new Error("Not implemented");
+    for (const mig of this.downPaths) {
+      const sql = readFileSync(mig, "utf-8");
+      const name = basename(mig);
+
+      logger.info({ migration: name }, "executing migration");
+      try {
+        await this.client.query(sql);
+      } catch (err) {
+        logger.error({ err, migration: name }, "failed to run migration");
+        return false;
+      }
+
+      logger.info({ migration: name }, "successfully executed migration");
+      await this.client.query(`INSERT INTO ${this.migrationTable} (name) VALUES ($1)`, [name]);
+    }
+
+    return true;
   }
 }
 
