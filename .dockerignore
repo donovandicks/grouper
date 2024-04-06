@@ -1,6 +1,9 @@
 **/node_modules
 **/*test*
 **/*spec*
+**/.husky
+**/.git
+**/.github
 src/cli/
 src/lib/
 dist/

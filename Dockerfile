@@ -7,16 +7,24 @@ WORKDIR /usr/
 COPY package.json .
 COPY bun.lockb .
 
-# Install dependencies (including dev dependencies for building)
-RUN bun install --production
-
-FROM builder AS runner
+# Install dependencies
+RUN bun install --production --ignore-scripts
 
 # Copy the rest of the application code
 COPY ./src ./src
+RUN bun build --compile --minify --sourcemap src/index.ts --outfile=app
+
+FROM oven/bun:alpine
+
+WORKDIR /usr/
+
+COPY --from=builder /usr/app .
+COPY --from=builder /usr/*.bun-build .
+COPY --from=builder /usr/bun.lockb .
+COPY ./src/migrations ./src/migrations
 
 # Expose port
 EXPOSE 3001
 
 # Command to run the app
-CMD ["bun", "run", "./src/index.ts"]
+CMD ["./app"]
