@@ -7,6 +7,7 @@ import { UserService } from "../services/user/user-service";
 import { currentEnv } from "../utils/env";
 import { initLogger, logger } from "../utils/telemtery";
 import { GroupsController, UsersController } from "./controllers";
+import { HealthController } from "./controllers/health";
 import { registerGracefulShutdownHandlers } from "./shutdown";
 import express from "express";
 import http from "http";
@@ -25,6 +26,8 @@ const gc = new GroupsController(gs);
 const us = new UserService(db);
 const uc = new UsersController(us);
 
+const hc = new HealthController();
+
 const app = express();
 app.use(express.json(), httpLogger({ logger }));
 
@@ -41,6 +44,7 @@ export async function main() {
   logger.info("successfully completed database migrations");
 
   logger.info("registering routes");
+  hc.registerRoute(app);
   uc.registerRoutes(app);
   gc.registerRoutes(app);
 

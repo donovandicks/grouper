@@ -4,6 +4,9 @@
 **/.husky
 **/.git
 **/.github
+*.bun-build
 src/cli/
 src/lib/
 dist/
+app
+cli
