@@ -1,5 +1,7 @@
 FROM oven/bun:alpine AS builder
 
+ARG BUILD_FLAGS="--minify --sourcemap"
+
 # Set working directory
 WORKDIR /usr/
 
@@ -12,7 +14,7 @@ RUN bun install --production --ignore-scripts
 
 # Copy the rest of the application code
 COPY ./src ./src
-RUN bun build --compile --minify --sourcemap src/index.ts --outfile=app
+RUN bun build --compile ${BUILD_FLAGS} src/index.ts --outfile=app
 
 FROM oven/bun:alpine
 
