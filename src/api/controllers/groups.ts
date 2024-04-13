@@ -2,7 +2,7 @@ import type { GroupID, UserID } from "../../domain";
 import { GroupService } from "../../services/group/group-service";
 import { logger } from "../../utils/telemtery";
 import { ErrorNotFound, type ErrorMessage } from "../errors";
-import type { CreateGroupDTO, GroupDTO } from "../models";
+import type { CreateGroupDTO, GroupDTO, GroupHistoryDTO } from "../models";
 import type { Express, Request, Response } from "express";
 
 export class GroupsController {
@@ -21,6 +21,7 @@ export class GroupsController {
     app.get("/groups/:id/members", this.getGroupMembers.bind(this));
     app.post("/groups/:id/members", this.addGroupMember.bind(this));
     app.delete("/groups/:groupId/members/:memberId", this.removeGroupMember.bind(this));
+    app.get("/groups/:id/history", this.getGroupHistory.bind(this));
     /* eslint-enable @typescript-eslint/no-misused-promises */
   }
 
@@ -122,6 +123,17 @@ export class GroupsController {
       res.json({}).status(200);
     } catch (err) {
       logger.error(err, "failed to delete group");
+      res.sendStatus(500);
+    }
+  }
+
+  async getGroupHistory(req: Request<{ id: GroupID }>, res: Response<GroupHistoryDTO>) {
+    try {
+      const history = await this.gs.getGetGroupHistory(req.params?.id);
+
+      res.json({ timeline: history }).status(200);
+    } catch (err) {
+      logger.error({ err }, "failed to get group history");
       res.sendStatus(500);
     }
   }

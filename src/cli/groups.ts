@@ -1,6 +1,7 @@
 import type { GroupID } from "../domain";
 import { createGroup, getGroup, listGroups } from "../lib";
 import { deleteGroup } from "../lib/delete-group";
+import { getGroupHistory } from "../lib/get-group-history";
 import type { Command } from "commander";
 
 export const registerGroupCommands = (program: Command) => {
@@ -29,6 +30,15 @@ export const registerGroupCommands = (program: Command) => {
       await getGroup(id);
     });
 
+  // get history
+  groupsCommand
+    .command("history")
+    .argument("<id>")
+    .action(async (id: GroupID) => {
+      await getGroupHistory(id);
+    });
+
+  // delete group
   groupsCommand
     .command("delete")
     .description("Delete a group by its ID")

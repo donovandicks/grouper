@@ -8,7 +8,7 @@ export const addGroupMember = async ({ groupId, userId }: { groupId: GroupID; us
   const data = JSON.stringify({ userId });
 
   const endpoint = `${GROUPS_BASE_URL}/${groupId}/members`;
-  await fetch(endpoint, {
+  const res = await fetch(endpoint, {
     method: "POST",
     headers: {
       ...HEADERS,
@@ -17,5 +17,9 @@ export const addGroupMember = async ({ groupId, userId }: { groupId: GroupID; us
     body: data,
   });
 
-  logger.info("added user to group");
+  if (res.status !== 200) {
+    logger.error("failed to add user to group");
+  } else {
+    logger.info("added user to group");
+  }
 };
