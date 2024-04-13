@@ -114,8 +114,10 @@ CREATE TYPE TYPE_GROUP_EVENT AS ENUM (
 
 CREATE TABLE IF NOT EXISTS tbl_group_history (
     id SERIAL PRIMARY KEY,
-    group_id UUID REFERENCES tbl_groups(id),
+    -- TODO: Adjust group deletion logic and history so we aren't obscuring or
+    -- deleting historical records
+    group_id UUID NOT NULL,
     event TYPE_GROUP_EVENT NOT NULL,
-    event_time TIMESTAMP DEFAULT NOW(),
+    event_time TIMESTAMP NOT NULL DEFAULT NOW(),
     data JSONB
 );

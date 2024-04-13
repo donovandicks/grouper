@@ -1,5 +1,5 @@
 import { AppConfig } from "../config/contants";
-import { Config, runMigrations } from "../config/database";
+import { getConfig, runMigrations } from "../config/database";
 import { InMemoryAc } from "../services/access-control";
 import { PostgresDatastore, type Datastore } from "../services/datastore";
 import { GroupService } from "../services/group/group-service";
@@ -15,7 +15,7 @@ import httpLogger from "pino-http";
 
 initLogger(currentEnv());
 
-const pool = new Pool(Config);
+const pool = new Pool(getConfig());
 const db: Datastore = new PostgresDatastore(pool);
 const ac = new InMemoryAc();
 

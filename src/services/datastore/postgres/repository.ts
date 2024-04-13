@@ -27,7 +27,7 @@ export class GroupRepository extends Repository {
     return (
       await this.tx.exec(
         `
-      SELECT id, name, handle, created_at AS createdAt, updated_at AS updatedAt
+      SELECT id, name, handle, group_type as type, created_at AS createdAt, updated_at AS updatedAt
       FROM ${this.tblName}
       WHERE ${this.tblName}.id = $1;
       `,

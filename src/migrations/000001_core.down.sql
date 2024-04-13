@@ -20,6 +20,8 @@ DROP TABLE IF EXISTS tbl_group_members;
 
 DROP TABLE IF EXISTS tbl_users;
 
+DROP TABLE IF EXISTS tbl_group_history;
+
 DROP TABLE IF EXISTS tbl_groups;
 
 DROP TABLE IF EXISTS tbl_audit;
