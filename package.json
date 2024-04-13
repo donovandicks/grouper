@@ -1,9 +1,8 @@
 {
   "scripts": {
-    "build": "tsc --project tsconfig.json && bun run copy-sql",
+    "build": "bun build --compile --minify --sourcemap src/index.ts --outfile=app",
     "build:cli": "bun build ./src/cli/index.ts --compile --outfile=./cli",
     "clean": "rm -rf .*.bun-build ./dist",
-    "copy-sql": "mkdir -p dist/src/migrations/sql && cp src/migrations/sql/*.sql dist/src/migrations/sql/",
     "start": "bun run ./src/index.ts",
     "start:bg": "bun run ./src/index.ts &",
     "lint": "bun x prettier . --check; bun x eslint .; tsc --project tsconfig.json --noEmit",
