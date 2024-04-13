@@ -8,7 +8,7 @@ export type Group = {
   id: GroupID;
   name: string; // Display Name
   handle: string; // Computer Name
-  type: string;
+  type?: string;
   createdAt: Date;
   updatedAt: Date;
 };
