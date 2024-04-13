@@ -1,9 +1,10 @@
 import { AppConfig } from "../config/contants";
-import { Config, runMigrations } from "../config/database";
+import { getConfig, runMigrations } from "../config/database";
 import { InMemoryAc } from "../services/access-control";
 import { PostgresDatastore, type Datastore } from "../services/datastore";
 import { GroupService } from "../services/group/group-service";
 import { UserService } from "../services/user/user-service";
+import { currentEnv } from "../utils/env";
 import { initLogger, logger } from "../utils/telemtery";
 import { GroupsController, UsersController } from "./controllers";
 import { registerGracefulShutdownHandlers } from "./shutdown";
@@ -12,9 +13,9 @@ import http from "http";
 import { Pool } from "pg";
 import httpLogger from "pino-http";
 
-initLogger("local");
+initLogger(currentEnv());
 
-const pool = new Pool(Config);
+const pool = new Pool(getConfig());
 const db: Datastore = new PostgresDatastore(pool);
 const ac = new InMemoryAc();
 

@@ -6,6 +6,7 @@ import { Pool } from "pg";
 initLogger("local");
 
 let pool: Pool;
+
 const TestConfig = {
   host: "0.0.0.0",
   port: 5433,

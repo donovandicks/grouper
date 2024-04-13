@@ -1,4 +1,5 @@
 import type { CreateGroupDTO, GroupDTO } from "../../api/models";
+import type { GroupHistoryEvent } from "../../domain/group";
 import type { Group, GroupID, User, UserID } from "../../domain/index";
 import type { AccessController } from "../access-control/index";
 import type { Datastore } from "../datastore/index";
@@ -61,5 +62,9 @@ export class GroupService {
     }
 
     await this.db.removeGroupMember(group, user);
+  }
+
+  async getGetGroupHistory(group: GroupID): Promise<GroupHistoryEvent[]> {
+    return this.db.getGroupHistory(group);
   }
 }
