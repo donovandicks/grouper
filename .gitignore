@@ -3,3 +3,4 @@ dist/
 *.bun-build
 cli
 !/src/cli
+app
