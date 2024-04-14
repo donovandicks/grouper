@@ -2,7 +2,7 @@ import { mustGetEnvVar } from "../utils/env";
 import { Migrator } from "../utils/migration";
 import { logger } from "../utils/telemtery";
 import { join, resolve } from "path";
-import type { ClientConfig, Pool, PoolClient } from "pg";
+import type { ClientConfig, Pool } from "pg";
 
 export const getConfig = (options?: {
   user?: string;
@@ -24,12 +24,8 @@ export async function runMigrations(
   dbPool: Pool,
   direction: "up" | "down" = "up",
 ): Promise<boolean> {
-  let client: PoolClient | undefined = undefined;
-
   try {
-    logger.info("connecting to database");
-    client = await dbPool.connect();
-    const migrator = new Migrator(client, join(resolve(__dirname, ".."), "migrations"));
+    const migrator = new Migrator(dbPool, join(resolve(__dirname, ".."), "migrations"));
     if (direction === "up") {
       return await migrator.up();
     } else {
@@ -38,9 +34,5 @@ export async function runMigrations(
   } catch (err) {
     logger.error({ err }, "error running migrations");
     return false;
-  } finally {
-    if (client) {
-      client.release();
-    }
   }
 }
