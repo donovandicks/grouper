@@ -1,5 +1,4 @@
 import type { Group, User } from "../domain";
-import type { GroupHistoryEvent } from "../domain/group";
 
 export type UserDTO = User;
 export type CreateUserDTO = Pick<UserDTO, "name" | "email">;
@@ -12,5 +11,6 @@ export type CreateGroupDTO = {
 };
 
 export type GroupHistoryDTO = {
-  timeline: GroupHistoryEvent[];
+  createdAt: Date;
+  // TODO: Model the group's member changes over time
 };
