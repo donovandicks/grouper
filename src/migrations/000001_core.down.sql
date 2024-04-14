@@ -18,9 +18,9 @@ DROP TRIGGER IF EXISTS trg_user_audit_insert ON tbl_users CASCADE;
 
 DROP TABLE IF EXISTS tbl_group_members;
 
-DROP TABLE IF EXISTS tbl_users;
+DROP TABLE IF EXISTS tbl_group_member_history;
 
-DROP TABLE IF EXISTS tbl_group_history;
+DROP TABLE IF EXISTS tbl_users;
 
 DROP TABLE IF EXISTS tbl_groups;
 

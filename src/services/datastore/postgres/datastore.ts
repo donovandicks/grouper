@@ -1,6 +1,5 @@
 import type { CreateGroupDTO, CreateUserDTO } from "../../../api/models";
-import type { GroupHistoryEvent } from "../../../domain/group";
-import type { Group, GroupID, User, UserID } from "../../../domain/index";
+import type { Group, GroupID, Membership, User, UserID } from "../../../domain";
 import type { Datastore } from "../index";
 import { GroupMemberRepository, GroupRepository, UserRepository } from "./repository";
 import { Pool } from "pg";
@@ -30,6 +29,10 @@ export class PostgresDatastore implements Datastore {
     await this.groupMembers.removeGroupMember(group, user);
   }
 
+  async getGroupMemberHistory(group: GroupID): Promise<Membership[]> {
+    return await this.groupMembers.getGroupMemberHistory(group);
+  }
+
   // Groups //
   async createGroup(group: CreateGroupDTO): Promise<Group> {
     return this.groups.create(group);
@@ -45,10 +48,6 @@ export class PostgresDatastore implements Datastore {
 
   async deleteGroup(id: GroupID): Promise<Group | undefined> {
     return this.groups.delete(id);
-  }
-
-  async getGroupHistory(id: GroupID): Promise<GroupHistoryEvent[]> {
-    return this.groups.getHistory(id);
   }
 
   // Users //

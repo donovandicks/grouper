@@ -41,8 +41,6 @@ export async function main() {
     return;
   }
 
-  logger.info("successfully completed database migrations");
-
   logger.info("registering routes");
   hc.registerRoute(app);
   uc.registerRoutes(app);

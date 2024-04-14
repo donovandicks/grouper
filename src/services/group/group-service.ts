@@ -1,8 +1,14 @@
 import type { CreateGroupDTO, GroupDTO } from "../../api/models";
-import type { GroupHistoryEvent } from "../../domain/group";
-import type { Group, GroupID, User, UserID } from "../../domain/index";
-import type { AccessController } from "../access-control/index";
-import type { Datastore } from "../datastore/index";
+import {
+  EventType,
+  type Event,
+  type Group,
+  type GroupID,
+  type User,
+  type UserID,
+} from "../../domain";
+import type { AccessController } from "../access-control";
+import type { Datastore } from "../datastore";
 
 export class GroupService {
   ac: AccessController;
@@ -44,6 +50,35 @@ export class GroupService {
     return await this.db.getGroupMembers(id);
   }
 
+  async getGroupHistory(id: GroupID): Promise<Event[] | undefined> {
+    const group = await this.db.getGroup(id);
+
+    if (!group) {
+      return undefined;
+    }
+
+    const timeline = [{ type: EventType.Create, timestamp: group.createdAt, data: group } as Event];
+    const memberships = await this.db.getGroupMemberHistory(id);
+
+    for (const membership of memberships) {
+      timeline.push({
+        type: EventType.AddMember,
+        timestamp: membership.startDate,
+        data: { userId: membership.userId },
+      });
+
+      if (membership.endDate) {
+        timeline.push({
+          type: EventType.RemoveMember,
+          timestamp: membership.endDate,
+          data: { userId: membership.userId },
+        });
+      }
+    }
+
+    return timeline.sort((a, b) => (a.timestamp < b.timestamp ? 1 : 0));
+  }
+
   async deleteGroup(id: GroupID): Promise<Group | undefined> {
     return this.db.deleteGroup(id);
   }
@@ -62,9 +97,5 @@ export class GroupService {
     }
 
     await this.db.removeGroupMember(group, user);
-  }
-
-  async getGetGroupHistory(group: GroupID): Promise<GroupHistoryEvent[]> {
-    return this.db.getGroupHistory(group);
   }
 }

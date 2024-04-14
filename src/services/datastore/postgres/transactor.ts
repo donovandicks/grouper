@@ -17,19 +17,11 @@ export class Transactor {
     return this.conn;
   }
 
-  /**
-   * Execute a single SQL query.
-   *
-   * @param sql Raw query string
-   * @param params Optional array of parameters to for the SQL query
-   * @returns QueryResult containing affected rows or requested return data
-   */
-  async query(sql: string, params: Array<string | null> = []): Promise<QueryResult> {
-    logger.debug({ queryString: sql }, "executing query");
-    // @ts-expect-error Parameters _can_ be a nullable array
-    const res = await (await this.acquire()).query(sql, params);
-    logger.debug({ rowCount: res.rowCount, queryString: sql }, "executed query");
-    return res;
+  release(): void {
+    if (this.conn) {
+      this.conn.release();
+      delete this.conn;
+    }
   }
 
   async start(): Promise<void> {
@@ -44,10 +36,28 @@ export class Transactor {
     await this.query("ROLLBACK;");
   }
 
-  release(): void {
-    if (this.conn) {
-      this.conn.release();
-      delete this.conn;
+  /**
+   * Execute a single SQL query.
+   *
+   * @param sql Raw query string
+   * @param params Optional array of parameters to for the SQL query
+   * @returns QueryResult containing affected rows or requested return data
+   */
+  async query(
+    sql: string,
+    params: Array<string | number | Date | null> = [],
+  ): Promise<QueryResult> {
+    try {
+      logger.debug({ queryString: sql }, "executing query");
+      // @ts-expect-error Parameters _can_ be a nullable array
+      const res = await (await this.acquire()).query(sql, params);
+      logger.debug({ rowCount: res.rowCount, queryString: sql }, "executed query");
+      return res;
+    } catch (err) {
+      logger.error({ err, queryString: sql }, "failed to execute database call");
+      throw err;
+    } finally {
+      this.release();
     }
   }
 
