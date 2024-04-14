@@ -1,4 +1,4 @@
-import type { GroupID, UserID } from "../../domain";
+import type { Event, GroupID, UserID } from "../../domain";
 import { GroupService } from "../../services/group/group-service";
 import { logger } from "../../utils/telemtery";
 import { ErrorNotFound, type ErrorMessage } from "../errors";
@@ -21,6 +21,7 @@ export class GroupsController {
     app.get("/groups/:id/members", this.getGroupMembers.bind(this));
     app.post("/groups/:id/members", this.addGroupMember.bind(this));
     app.delete("/groups/:groupId/members/:memberId", this.removeGroupMember.bind(this));
+    app.get("/groups/:id/history", this.getGroupHistory.bind(this));
     /* eslint-enable @typescript-eslint/no-misused-promises */
   }
 
@@ -30,7 +31,7 @@ export class GroupsController {
       logger.info({ id: group.id }, "successfully created group");
       res.json(group).status(201);
     } catch (err) {
-      console.error("failed to handle create request:", err);
+      logger.error({ err }, "failed to handle create request");
       res.sendStatus(500);
     }
   }
@@ -40,7 +41,7 @@ export class GroupsController {
       const groups = await this.gs.listGroups();
       res.json(groups).status(200);
     } catch (err) {
-      console.error("failed to handle list request:", err);
+      logger.error({ err }, "failed to handle list request");
       res.sendStatus(500);
     }
   }
@@ -64,7 +65,7 @@ export class GroupsController {
         return;
       }
 
-      console.error("failed to find group:", err);
+      logger.error({ err }, "failed to find group");
       res.sendStatus(500);
     }
   }
@@ -76,6 +77,7 @@ export class GroupsController {
       if (members === undefined) {
         throw new ErrorNotFound();
       }
+
       res.json(members).status(200);
     } catch (err) {
       if (err instanceof ErrorNotFound) {
@@ -85,7 +87,7 @@ export class GroupsController {
         return;
       }
 
-      console.error(err);
+      logger.error({ err }, "failed to get group members");
       res.sendStatus(500);
     }
   }
@@ -95,7 +97,7 @@ export class GroupsController {
       await this.gs.addMemberToGroup(req.params?.id, req.body?.userId);
       res.sendStatus(200);
     } catch (err) {
-      console.error("failed to add member to group", err);
+      logger.error({ err }, "failed to add member to group");
       res.sendStatus(500);
     }
   }
@@ -121,7 +123,26 @@ export class GroupsController {
 
       res.json({}).status(200);
     } catch (err) {
-      logger.error(err, "failed to delete group");
+      logger.error({ err }, "failed to delete group");
+      res.sendStatus(500);
+    }
+  }
+
+  async getGroupHistory(req: Request<{ id: GroupID }>, res: Response<Event[] | ErrorMessage>) {
+    try {
+      const history = await this.gs.getGroupHistory(req.params.id);
+      if (!history) {
+        throw new ErrorNotFound();
+      }
+
+      res.json(history).status(200);
+    } catch (err) {
+      if (err instanceof ErrorNotFound) {
+        res.json({ message: `Group ${req.params.id} does not exist`, statusCode: 404 }).status(404);
+        return;
+      }
+
+      logger.error({ err }, "failed to get group history");
       res.sendStatus(500);
     }
   }

@@ -1,5 +1,5 @@
 import type { CreateGroupDTO, CreateUserDTO } from "../../../api/models";
-import type { Group, GroupID, User, UserID } from "../../../domain";
+import type { Group, GroupID, Membership, User, UserID } from "../../../domain";
 import { toKebab } from "../../../utils/domain";
 import { Transactor } from "./transactor";
 import type { Pool } from "pg";
@@ -77,7 +77,20 @@ export class GroupMemberRepository extends Repository {
   async getGroupMembers(groupId: GroupID): Promise<UserID[]> {
     return (
       await this.tx.query(`SELECT user_id FROM ${this.tblName} WHERE group_id = $1;`, [groupId])
-    ).rows.map((r: { user_id: string }) => r.user_id as UserID);
+    ).rows.map((r: { user_id: UserID }) => r.user_id);
+  }
+
+  async getGroupMemberHistory(groupId: GroupID): Promise<Membership[]> {
+    return (
+      await this.tx.query(
+        `
+      SELECT group_id AS "groupId", user_id AS "userId", start_date AS "startDate", end_date AS "endDate"
+      FROM ${this.historicalTable}
+      WHERE group_id = $1;
+      `,
+        [groupId],
+      )
+    ).rows as Membership[];
   }
 
   async addGroupMember(groupId: GroupID, userId: UserID): Promise<void> {

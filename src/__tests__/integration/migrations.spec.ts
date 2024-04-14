@@ -14,7 +14,14 @@ const TestConfig = {
   password: "password",
   database: "test",
 };
-const expectedTables = ["tbl_users", "tbl_audit", "tbl_group_members", "tbl_groups"];
+
+const expectedTables = [
+  "tbl_users",
+  "tbl_audit",
+  "tbl_group_members",
+  "tbl_group_member_history",
+  "tbl_groups",
+];
 
 describe("postgres integration tests", () => {
   beforeAll(() => {

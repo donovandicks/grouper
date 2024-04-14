@@ -9,8 +9,3 @@ export type CreateGroupDTO = {
   handle?: string;
   type?: string;
 };
-
-export type GroupHistoryDTO = {
-  createdAt: Date;
-  // TODO: Model the group's member changes over time
-};
