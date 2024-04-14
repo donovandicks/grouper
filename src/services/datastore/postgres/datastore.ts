@@ -1,5 +1,4 @@
 import type { CreateGroupDTO, CreateUserDTO } from "../../../api/models";
-import type { GroupHistoryEvent } from "../../../domain/group";
 import type { Group, GroupID, User, UserID } from "../../../domain/index";
 import type { Datastore } from "../index";
 import { GroupMemberRepository, GroupRepository, UserRepository } from "./repository";
@@ -45,10 +44,6 @@ export class PostgresDatastore implements Datastore {
 
   async deleteGroup(id: GroupID): Promise<Group | undefined> {
     return this.groups.delete(id);
-  }
-
-  async getGroupHistory(id: GroupID): Promise<GroupHistoryEvent[]> {
-    return this.groups.getHistory(id);
   }
 
   // Users //

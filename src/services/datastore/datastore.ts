@@ -1,6 +1,5 @@
 import type { CreateGroupDTO, CreateUserDTO } from "../../api/models";
 import type { Group, GroupEvent, GroupID, User, UserID } from "../../domain";
-import type { GroupHistoryEvent } from "../../domain/group";
 
 export type GroupHistory = {
   groupId: GroupID;
@@ -20,7 +19,6 @@ export interface Datastore {
   listGroups(): Promise<Group[]>;
   getGroup(id: GroupID): Promise<Group | undefined>;
   deleteGroup(id: GroupID): Promise<Group | undefined>;
-  getGroupHistory(id: GroupID): Promise<GroupHistoryEvent[]>;
 
   // Users
   createUser(user: CreateUserDTO): Promise<User>;
