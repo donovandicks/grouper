@@ -62,7 +62,7 @@ export class Migrator {
         continue;
       }
 
-      logger.info({ migration: name }, "executing migration");
+      logger.debug({ migration: name }, "executing migration");
       try {
         await this.tx.query(sql);
       } catch (err) {
@@ -70,10 +70,11 @@ export class Migrator {
         return false;
       }
 
-      logger.info({ migration: name }, "successfully executed migration");
+      logger.debug({ migration: name }, "successfully executed migration");
       await this.tx.query(`INSERT INTO ${this.migrationTable} (name) VALUES ($1)`, [name]);
     }
 
+    logger.info("successfully completed all migrations");
     return true;
   }
 
@@ -82,7 +83,7 @@ export class Migrator {
       const sql = readFileSync(mig, "utf-8");
       const name = basename(mig);
 
-      logger.info({ migration: name }, "executing migration");
+      logger.debug({ migration: name }, "executing migration");
       try {
         await this.tx.query(sql);
       } catch (err) {
@@ -90,10 +91,11 @@ export class Migrator {
         return false;
       }
 
-      logger.info({ migration: name }, "successfully executed migration");
+      logger.debug({ migration: name }, "successfully executed migration");
       await this.tx.query(`INSERT INTO ${this.migrationTable} (name) VALUES ($1)`, [name]);
     }
 
+    logger.info("successfully completed all migrations");
     return true;
   }
 }
