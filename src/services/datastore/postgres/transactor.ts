@@ -24,7 +24,10 @@ export class Transactor {
    * @param params Optional array of parameters to for the SQL query
    * @returns QueryResult containing affected rows or requested return data
    */
-  async query(sql: string, params: Array<string | null> = []): Promise<QueryResult> {
+  async query(
+    sql: string,
+    params: Array<string | number | Date | null> = [],
+  ): Promise<QueryResult> {
     logger.debug({ queryString: sql }, "executing query");
     // @ts-expect-error Parameters _can_ be a nullable array
     const res = await (await this.acquire()).query(sql, params);
