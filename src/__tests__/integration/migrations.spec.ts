@@ -1,4 +1,5 @@
 import { runMigrations } from "../../config/database";
+import { Transactor } from "../../services/datastore/postgres/transactor";
 import { initLogger } from "../../utils/telemtery";
 import { afterAll, beforeAll, describe, expect, it } from "bun:test";
 import { Pool } from "pg";
@@ -33,13 +34,13 @@ describe("postgres integration tests", () => {
   });
 
   it("successfully runs migrations", async () => {
-    const client = await pool.connect();
+    const tx = new Transactor(pool);
 
     const upResult = await runMigrations(pool);
     expect(upResult).toBe(true);
 
     let tbls = (
-      await client.query(
+      await tx.query(
         `
         SELECT table_schema AS schema, table_name AS name
         FROM information_schema.tables
@@ -58,7 +59,7 @@ describe("postgres integration tests", () => {
     expect(downResult).toBe(true);
 
     tbls = (
-      await client.query(
+      await tx.query(
         `
         SELECT table_schema AS schema, table_name AS name
         FROM information_schema.tables
@@ -69,7 +70,5 @@ describe("postgres integration tests", () => {
     ).rows;
 
     expect(tbls).toEqual([]);
-
-    client.release();
   });
 });
