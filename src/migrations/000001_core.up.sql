@@ -85,14 +85,22 @@ UPDATE
     OR DELETE ON tbl_users FOR EACH ROW EXECUTE FUNCTION fn_insert_audit_log();
 
 -- TBL_GROUP_MEMBERS
+CREATE TABLE IF NOT EXISTS tbl_group_member_history (
+    id SERIAL PRIMARY KEY,
+    group_id UUID NOT NULL REFERENCES tbl_groups(id),
+    user_id UUID NOT NULL REFERENCES tbl_users(id),
+    start_date TIMESTAMP NOT NULL DEFAULT NOW(),
+    end_date TIMESTAMP
+);
+
 CREATE TABLE IF NOT EXISTS tbl_group_members (
     id SERIAL PRIMARY KEY,
-    group_id UUID REFERENCES tbl_groups(id) ON
+    group_id UUID NOT NULL REFERENCES tbl_groups(id) ON
     DELETE CASCADE,
-    user_id UUID REFERENCES tbl_users(id) ON
+    user_id UUID NOT NULL REFERENCES tbl_users(id) ON
     DELETE CASCADE,
-    start_date TIMESTAMP DEFAULT NOW(),
-    end_date TIMESTAMP,
+    start_date TIMESTAMP NOT NULL DEFAULT NOW(),
+    historical_id INT NOT NULL REFERENCES tbl_group_member_history(id),
     UNIQUE(group_id, user_id)
 );
 
@@ -102,22 +110,3 @@ INSERT
     OR
 UPDATE
     OR DELETE ON tbl_group_members FOR EACH ROW EXECUTE FUNCTION fn_insert_audit_log();
-
--- TBL_GROUP_HISTORY
-CREATE TYPE TYPE_GROUP_EVENT AS ENUM (
-    'GROUP_CREATE',
-    'GROUP_UPDATE',
-    'GROUP_DELETE',
-    'GROUP_MEMBER_ADD',
-    'GROUP_MEMBER_REMOVE'
-);
-
-CREATE TABLE IF NOT EXISTS tbl_group_history (
-    id SERIAL PRIMARY KEY,
-    -- TODO: Adjust group deletion logic and history so we aren't obscuring or
-    -- deleting historical records
-    group_id UUID NOT NULL,
-    event TYPE_GROUP_EVENT NOT NULL,
-    event_time TIMESTAMP NOT NULL DEFAULT NOW(),
-    data JSONB
-);
