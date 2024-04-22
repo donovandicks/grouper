@@ -48,7 +48,6 @@ export class Transactor {
     params: Array<string | number | Date | null> = [],
   ): Promise<QueryResult> {
     try {
-      logger.debug({ queryString: sql }, "executing query");
       // @ts-expect-error Parameters _can_ be a nullable array
       const res = await (await this.acquire()).query(sql, params);
       logger.debug({ rowCount: res.rowCount, queryString: sql }, "executed query");
