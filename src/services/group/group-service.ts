@@ -19,25 +19,21 @@ export class GroupService {
     this.db = db;
   }
 
-  async createGroup(group: CreateGroupDTO): Promise<GroupDTO> {
-    const g = await this.db.createGroup(group);
-    return { ...g, members: [] };
+  async createGroup(group: CreateGroupDTO): Promise<Group> {
+    return await this.db.createGroup(group);
   }
 
-  async listGroups(): Promise<GroupDTO[]> {
-    const groups = await this.db.listGroups();
-    return await Promise.all(
-      groups.map(async (g) => {
-        return {
-          ...g,
-          members: await this.db.getGroupMembers(g.id),
-        };
-      }),
-    );
+  async listGroups(): Promise<Group[]> {
+    return await this.db.listGroups();
   }
 
-  async getGroup(id: GroupID): Promise<Group | undefined> {
-    return this.db.getGroup(id);
+  async getGroup(id: GroupID): Promise<GroupDTO | undefined> {
+    const group = await this.db.getGroup(id);
+    if (!group) {
+      return undefined;
+    }
+
+    return { ...group, members: (await this.getGroupMembers(group.id)) ?? [] };
   }
 
   async getGroupMembers(id: GroupID): Promise<User[] | undefined> {
@@ -48,6 +44,28 @@ export class GroupService {
     }
 
     return await this.db.getGroupMembers(id);
+  }
+
+  async queryGroupMembers(
+    id: GroupID,
+    params: { userId?: UserID; email?: string },
+  ): Promise<User[] | undefined> {
+    const group = await this.db.getGroup(id);
+    if (!group) {
+      return undefined;
+    }
+
+    const members = await this.db.getGroupMembers(group.id);
+
+    return members.filter((u) => {
+      if (params.userId && u.id === params.userId) {
+        return u;
+      }
+
+      if (params.email && u.email === params.email) {
+        return u;
+      }
+    });
   }
 
   async getGroupHistory(id: GroupID): Promise<Event[] | undefined> {
@@ -76,26 +94,46 @@ export class GroupService {
       }
     }
 
-    return timeline.sort((a, b) => (a.timestamp < b.timestamp ? 1 : 0));
+    return timeline.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
   }
 
   async deleteGroup(id: GroupID): Promise<Group | undefined> {
     return this.db.deleteGroup(id);
   }
 
-  async addMemberToGroup(group: GroupID, user: UserID): Promise<void> {
+  async addMemberToGroup(group: GroupID, user: UserID): Promise<boolean | undefined> {
     if (this.ac.userExcludedFromGroup(group, user)) {
       return;
     }
 
+    const alreadyMember = await this.queryGroupMembers(group, { userId: user });
+    if (alreadyMember === undefined) {
+      return undefined;
+    }
+
+    if (alreadyMember.length > 0) {
+      return true;
+    }
+
     await this.db.addGroupMember(group, user);
+    return true;
   }
 
-  async removeMemberFromGroup(group: GroupID, user: UserID): Promise<void> {
+  async removeMemberFromGroup(group: GroupID, user: UserID): Promise<boolean | undefined> {
     if (this.ac.userAllowedInGroup(group, user)) {
       return;
     }
 
+    const alreadyMember = await this.queryGroupMembers(group, { userId: user });
+    if (alreadyMember === undefined) {
+      return undefined;
+    }
+
+    if (alreadyMember.length === 0) {
+      return true;
+    }
+
     await this.db.removeGroupMember(group, user);
+    return true;
   }
 }
