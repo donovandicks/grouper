@@ -141,12 +141,12 @@ export class GroupsController {
     }
   }
 
-  async deleteGroup(req: Request, res: Response<GroupDTO | Record<string, never> | ErrorMessage>) {
+  async deleteGroup(req: Request, res: Response<Group | Record<string, never> | ErrorMessage>) {
     try {
       const group = await this.gs.deleteGroup(req.params?.id as GroupID);
 
       if (group) {
-        res.json({ ...group, members: [] }).status(200);
+        res.json(group).status(200);
         return;
       }
 

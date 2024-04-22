@@ -9,16 +9,17 @@ describe("end to end suite", () => {
   });
 
   it("successfully creates groups via API", async () => {
-    const created = await createGroup({ name: "Test" });
+    // GIVEN
+    const params = { name: "Test" };
 
-    expect(created.name).toEqual("Test");
-
+    // WHEN
+    const created = await createGroup(params);
     const received = await getGroup(created.id);
-
-    expect(received).toEqual(created);
-
     const deleted = await deleteGroup(created.id);
 
+    // THEN
+    expect(created.name).toEqual("Test");
+    expect(received).toEqual({ ...created, members: [] });
     expect(deleted).toEqual(created);
   });
 });
