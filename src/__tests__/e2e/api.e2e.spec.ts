@@ -9,7 +9,7 @@ import { queryGroupMembers } from "../../lib/query-group-members";
 import { initLogger } from "../../utils/telemtery";
 import { beforeAll, describe, expect, it } from "bun:test";
 
-initLogger("local");
+initLogger("test");
 
 describe("end to end suite", () => {
   beforeAll(() => {
