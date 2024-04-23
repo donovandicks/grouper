@@ -36,9 +36,13 @@ export class GroupsController {
     }
   }
 
-  async listGroups(_req: Request, res: Response<Group[] | ErrorMessage>) {
+  async listGroups(req: Request, res: Response<Group[] | ErrorMessage>) {
     try {
-      const groups = await this.gs.listGroups();
+      const groups = await this.gs.listGroups({
+        groupId: (req.query.groupId as GroupID) ?? undefined,
+        name: (req.query.name as string) ?? undefined,
+        handle: (req.query.handle as string) ?? undefined,
+      });
       res.json(groups);
     } catch (err) {
       logger.error({ err }, "failed to handle list request");
@@ -65,8 +69,9 @@ export class GroupsController {
 
   async getGroupMembers(req: Request, res: Response) {
     try {
-      const members = await this.gs.queryGroupMembers(req.params?.id as GroupID, {
+      const members = await this.gs.getGroupMembers(req.params?.id as GroupID, {
         userId: (req.query.userId as UserID) || undefined,
+        name: (req.query.name as string) || undefined,
         email: (req.query.email as string) || undefined,
       });
       res.json(members);

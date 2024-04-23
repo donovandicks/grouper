@@ -24,8 +24,30 @@ export class GroupService {
     return await this.db.createGroup(group);
   }
 
-  async listGroups(): Promise<Group[]> {
-    return await this.db.listGroups();
+  async listGroups(params: {
+    groupId?: GroupID;
+    name?: string;
+    handle?: string;
+  }): Promise<Group[]> {
+    const groups = await this.db.listGroups();
+
+    if (Object.values(params).every((p) => p === undefined)) {
+      return groups;
+    }
+
+    return groups.filter((g) => {
+      if (params.groupId && g.id === params.groupId) {
+        return g;
+      }
+
+      if (params.name && g.name.includes(params.name)) {
+        return g;
+      }
+
+      if (params.handle && g.handle.includes(params.handle)) {
+        return g;
+      }
+    });
   }
 
   async getGroup(id: GroupID): Promise<GroupDTO> {
@@ -37,26 +59,21 @@ export class GroupService {
     return { ...group, members: (await this.getGroupMembers(group.id)) ?? [] };
   }
 
-  async getGroupMembers(id: GroupID): Promise<User[]> {
-    const group = await this.db.getGroup(id);
-
-    if (!group) {
-      throw new GroupNotFoundError(id);
-    }
-
-    return await this.db.getGroupMembers(id);
-  }
-
-  async queryGroupMembers(
+  async getGroupMembers(
     id: GroupID,
-    params: { userId?: UserID; email?: string },
+    params?: { userId?: UserID; name?: string; email?: string },
   ): Promise<User[]> {
     const group = await this.db.getGroup(id);
-    if (!group) {
+
+    if (group === undefined) {
       throw new GroupNotFoundError(id);
     }
 
-    const members = await this.db.getGroupMembers(group.id);
+    const members = await this.db.getGroupMembers(id);
+
+    if (params === undefined || Object.values(params).every((p) => p === undefined)) {
+      return members;
+    }
 
     return members.filter((u) => {
       if (params.userId && u.id === params.userId) {
@@ -64,6 +81,10 @@ export class GroupService {
       }
 
       if (params.email && u.email === params.email) {
+        return u;
+      }
+
+      if (params.name && u.name.includes(params.name)) {
         return u;
       }
     });
@@ -107,7 +128,7 @@ export class GroupService {
       return;
     }
 
-    const alreadyMember = await this.queryGroupMembers(group, { userId: user });
+    const alreadyMember = await this.getGroupMembers(group, { userId: user });
     if (alreadyMember.length > 0) {
       return;
     }
@@ -120,7 +141,7 @@ export class GroupService {
       return;
     }
 
-    const alreadyMember = await this.queryGroupMembers(group, { userId: user });
+    const alreadyMember = await this.getGroupMembers(group, { userId: user });
     if (alreadyMember.length === 0) {
       return;
     }

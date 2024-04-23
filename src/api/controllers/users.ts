@@ -51,9 +51,13 @@ export class UsersController {
     }
   }
 
-  async listUsers(_req: Request, res: Response<UserDTO[] | ErrorMessage>) {
+  async listUsers(req: Request, res: Response<UserDTO[] | ErrorMessage>) {
     try {
-      const users = await this.us.listUsers();
+      const users = await this.us.listUsers({
+        userId: (req.query.userId as UserID) ?? undefined,
+        name: (req.query.name as string) ?? undefined,
+        email: (req.query.email as string) ?? undefined,
+      });
       res.json(users);
     } catch (err) {
       logger.error({ err }, "failed to list users");

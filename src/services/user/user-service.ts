@@ -14,8 +14,25 @@ export class UserService {
     return this.db.createUser(user);
   }
 
-  async listUsers(): Promise<User[]> {
-    return this.db.listUsers();
+  async listUsers(params: { userId?: UserID; name?: string; email?: string }): Promise<User[]> {
+    const users = await this.db.listUsers();
+    if (Object.values(params).every((p) => p === undefined)) {
+      return users;
+    }
+
+    return users.filter((u) => {
+      if (params.userId && u.id === params.userId) {
+        return u;
+      }
+
+      if (params.email && u.email === params.email) {
+        return u;
+      }
+
+      if (params.name && u.name.includes(params.name)) {
+        return u;
+      }
+    });
   }
 
   async getUser(id: UserID): Promise<User> {
