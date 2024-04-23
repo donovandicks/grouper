@@ -28,47 +28,46 @@ export class UsersController {
     try {
       logger.info({ id: req.params.id }, "received user delete request");
       const deleted = (await this.us.deleteUser(req.params.id)) ?? {};
-      res.json(deleted).status(200);
+      res.json(deleted);
     } catch (err) {
       console.error("failed to delete user", err);
-      res.json(ERR_INTERNAL_SERVER).status(500);
+      res.status(500).json(ERR_INTERNAL_SERVER);
     }
   }
 
   async getUser(req: Request<{ id: UserID }>, res: Response<UserDTO | ErrorMessage>) {
     try {
       const user = await this.us.getUser(req.params.id);
-      res.json(user).status(200);
+      res.json(user);
     } catch (err) {
       logger.error({ err }, "failed to get user");
 
       if (err instanceof UserNotFoundError) {
-        logger.error(`could not find user ${req.params.id}`);
-        res.sendStatus(404);
+        res.status(404).json({ message: err.message, statusCode: 404 });
         return;
       }
 
-      res.json(ERR_INTERNAL_SERVER).status(500);
+      res.status(500).json(ERR_INTERNAL_SERVER);
     }
   }
 
   async listUsers(_req: Request, res: Response<UserDTO[] | ErrorMessage>) {
     try {
       const users = await this.us.listUsers();
-      res.json(users).status(200);
+      res.json(users);
     } catch (err) {
       logger.error({ err }, "failed to list users");
-      res.json(ERR_INTERNAL_SERVER).status(500);
+      res.status(500).json(ERR_INTERNAL_SERVER);
     }
   }
 
   async createUser(req: Request, res: Response<UserDTO | ErrorMessage>) {
     try {
       const user = await this.us.createUser(req.body as CreateUserDTO);
-      res.json(user).status(201);
+      res.status(201).json(user);
     } catch (err) {
       logger.error({ err }, "failed to create new user");
-      res.json(ERR_INTERNAL_SERVER).status(500);
+      res.status(500).json(ERR_INTERNAL_SERVER);
     }
   }
 }

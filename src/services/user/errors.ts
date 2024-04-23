@@ -4,7 +4,7 @@ export class UserNotFoundError extends Error {
   userId: UserID;
 
   constructor(id: UserID) {
-    super();
+    super(`User ${id} not found`);
     this.userId = id;
   }
 }

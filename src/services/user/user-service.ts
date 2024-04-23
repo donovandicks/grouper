@@ -1,6 +1,7 @@
 import type { CreateUserDTO } from "../../api/models";
 import type { User, UserID } from "../../domain";
 import type { Datastore } from "../datastore";
+import { UserNotFoundError } from "./errors";
 
 export class UserService {
   db: Datastore;
@@ -17,8 +18,13 @@ export class UserService {
     return this.db.listUsers();
   }
 
-  async getUser(id: UserID): Promise<User | undefined> {
-    return this.db.getUser(id);
+  async getUser(id: UserID): Promise<User> {
+    const user = await this.db.getUser(id);
+    if (user === undefined) {
+      throw new UserNotFoundError(id);
+    }
+
+    return user;
   }
 
   async deleteUser(id: UserID): Promise<User | undefined> {

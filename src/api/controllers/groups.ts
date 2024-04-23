@@ -1,7 +1,7 @@
 import type { Event, Group, GroupID, UserID } from "../../domain";
 import { GroupNotFoundError, GroupService } from "../../services/group";
 import { logger } from "../../utils/telemtery";
-import { type ErrorMessage } from "../errors";
+import { ERR_INTERNAL_SERVER, type ErrorMessage } from "../errors";
 import type { CreateGroupDTO, GroupDTO } from "../models";
 import type { Express, Request, Response } from "express";
 
@@ -25,24 +25,24 @@ export class GroupsController {
     /* eslint-enable @typescript-eslint/no-misused-promises */
   }
 
-  async createGroup(req: Request, res: Response<Group>) {
+  async createGroup(req: Request, res: Response<Group | ErrorMessage>) {
     try {
       const group = await this.gs.createGroup(req.body as CreateGroupDTO);
       logger.info({ id: group.id }, "successfully created group");
-      res.json(group).status(201);
+      res.status(201).json(group);
     } catch (err) {
       logger.error({ err }, "failed to handle create request");
-      res.sendStatus(500);
+      res.status(500).json(ERR_INTERNAL_SERVER);
     }
   }
 
-  async listGroups(_req: Request, res: Response<Group[]>) {
+  async listGroups(_req: Request, res: Response<Group[] | ErrorMessage>) {
     try {
       const groups = await this.gs.listGroups();
-      res.json(groups).status(200);
+      res.json(groups);
     } catch (err) {
       logger.error({ err }, "failed to handle list request");
-      res.sendStatus(500);
+      res.status(500).json(ERR_INTERNAL_SERVER);
     }
   }
 
@@ -50,18 +50,16 @@ export class GroupsController {
     try {
       const group = await this.gs.getGroup(req.params?.id as GroupID);
       const members = await this.gs.getGroupMembers(group.id);
-      res.json({ ...group, members: members ?? [] }).status(200);
+      res.json({ ...group, members: members ?? [] });
     } catch (err) {
       logger.error({ err }, "failed to find group");
 
       if (err instanceof GroupNotFoundError) {
-        res
-          .json({ message: `Group ${req.params?.id} does not exist`, statusCode: 404 })
-          .status(404);
+        res.status(404).json({ message: err.message, statusCode: 404 });
         return;
       }
 
-      res.sendStatus(500);
+      res.status(500).json(ERR_INTERNAL_SERVER);
     }
   }
 
@@ -71,18 +69,16 @@ export class GroupsController {
         userId: (req.query.userId as UserID) || undefined,
         email: (req.query.email as string) || undefined,
       });
-      res.json(members).status(200);
+      res.json(members);
     } catch (err) {
       logger.error({ err }, "failed to get group members");
 
       if (err instanceof GroupNotFoundError) {
-        res
-          .json({ message: `Group ${req.params?.id} does not exist`, statusCode: 404 })
-          .status(404);
+        res.status(404).json({ message: err.message, statusCode: 404 });
         return;
       }
 
-      res.sendStatus(500);
+      res.status(500).json(ERR_INTERNAL_SERVER);
     }
   }
 
@@ -94,13 +90,11 @@ export class GroupsController {
       logger.error({ err }, "failed to add member to group");
 
       if (err instanceof GroupNotFoundError) {
-        res
-          .json({ message: `Group ${req.params?.id} does not exist`, statusCode: 404 })
-          .status(404);
+        res.status(404).json({ message: err.message, statusCode: 404 });
         return;
       }
 
-      res.sendStatus(500);
+      res.status(500).json(ERR_INTERNAL_SERVER);
     }
   }
 
@@ -112,13 +106,11 @@ export class GroupsController {
       logger.error(err, "failed to remove user from group");
 
       if (err instanceof GroupNotFoundError) {
-        res
-          .json({ message: `Group ${req.params?.groupId} does not exist`, statusCode: 404 })
-          .status(404);
+        res.status(404).json({ message: err.message, statusCode: 404 });
         return;
       }
 
-      res.sendStatus(500);
+      res.status(500).json(ERR_INTERNAL_SERVER);
     }
   }
 
@@ -126,14 +118,14 @@ export class GroupsController {
     try {
       const group = await this.gs.deleteGroup(req.params?.id as GroupID);
       if (group) {
-        res.json(group).status(200);
+        res.json(group);
         return;
       }
 
-      res.json({}).status(200);
+      res.json({});
     } catch (err) {
       logger.error({ err }, "failed to delete group");
-      res.sendStatus(500);
+      res.status(500).json(ERR_INTERNAL_SERVER);
     }
   }
 
@@ -145,11 +137,11 @@ export class GroupsController {
       logger.error({ err }, "failed to get group history");
 
       if (err instanceof GroupNotFoundError) {
-        res.json({ message: `Group ${req.params.id} does not exist`, statusCode: 404 }).status(404);
+        res.json({ message: err.message, statusCode: 404 }).status(404);
         return;
       }
 
-      res.sendStatus(500);
+      res.status(500).json(ERR_INTERNAL_SERVER);
     }
   }
 }

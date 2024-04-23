@@ -4,7 +4,7 @@ export class GroupNotFoundError extends Error {
   groupId: GroupID;
 
   constructor(id: GroupID) {
-    super();
+    super(`Group ${id} not found`);
     this.groupId = id;
   }
 }
