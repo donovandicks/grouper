@@ -13,7 +13,9 @@ export const registerUserCommands = (program: Command) => {
     .command("create")
     .option("-n, --name <name>", "user name")
     .option("-e, --email <email>")
-    .action((opts: { name: string; email: string }) => createUser(opts));
+    .action(async (opts: { name: string; email: string }) => {
+      await createUser(opts);
+    });
 
   // get user
   usersCommand

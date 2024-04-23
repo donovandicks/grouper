@@ -2,10 +2,10 @@ import type { GroupDTO } from "../api/models";
 import { logger } from "../utils/telemtery";
 import { GROUPS_BASE_URL, HEADERS } from "./constants";
 
-export const createGroup = async (opts: { name: string }): Promise<GroupDTO> => {
-  logger.info(`Creating group ${opts.name}`);
+export const createGroup = async (opts: { name: string; handle?: string }): Promise<GroupDTO> => {
+  logger.info({ opts }, "creating group");
 
-  const data = JSON.stringify({ name: opts.name });
+  const data = JSON.stringify(opts);
 
   const res = await fetch(GROUPS_BASE_URL, {
     method: "POST",
