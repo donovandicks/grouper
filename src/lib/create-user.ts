@@ -1,7 +1,8 @@
+import type { UserDTO } from "../api/models";
 import { logger } from "../utils/telemtery";
 import { HEADERS, USERS_BASE_URL } from "./constants";
 
-export const createUser = async (opts: { name: string; email: string }) => {
+export const createUser = async (opts: { name: string; email: string }): Promise<UserDTO> => {
   logger.info(`Creating user ${opts.name}`);
 
   const data = JSON.stringify(opts);
@@ -15,5 +16,7 @@ export const createUser = async (opts: { name: string; email: string }) => {
     body: data,
   });
 
-  logger.info(await res.json(), "created user");
+  const user = (await res.json()) as UserDTO;
+  logger.info(user, "created user");
+  return user;
 };

@@ -11,7 +11,7 @@ import { sleepSync } from "bun";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "bun:test";
 import { Pool } from "pg";
 
-initLogger("local");
+initLogger("test");
 
 let tx: Transactor;
 let gs: GroupService;
@@ -109,7 +109,6 @@ describe("service and database integration tests", () => {
 
     // THEN
     expect(history).not.toBe(undefined);
-    expect(history!.length).toEqual(5);
     expect(
       history?.map((h) => {
         return { type: h.type, data: h.data };

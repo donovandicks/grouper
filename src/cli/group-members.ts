@@ -21,7 +21,9 @@ export const registerGroupMemberCommands = (program: Command) => {
   groupMembersCommand
     .command("list")
     .argument("<group-id>")
-    .action((id: string) => getGroupMembers(id as GroupID));
+    .action(async (id: string) => {
+      await getGroupMembers(id as GroupID);
+    });
 
   // remove group member
   groupMembersCommand
