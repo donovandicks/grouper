@@ -1,7 +1,7 @@
 import type { UserID } from "../../domain";
-import { UserService } from "../../services/user/user-service";
+import { UserNotFoundError, UserService } from "../../services/user";
 import { logger } from "../../utils/telemtery";
-import { ERR_INTERNAL_SERVER, ErrorNotFound, type ErrorMessage } from "../errors";
+import { ERR_INTERNAL_SERVER, type ErrorMessage } from "../errors";
 import type { CreateUserDTO, UserDTO } from "../models";
 import type { Express, Request, Response } from "express";
 
@@ -38,12 +38,11 @@ export class UsersController {
   async getUser(req: Request<{ id: UserID }>, res: Response<UserDTO | ErrorMessage>) {
     try {
       const user = await this.us.getUser(req.params.id);
-      if (!user) {
-        throw new ErrorNotFound();
-      }
       res.json(user).status(200);
     } catch (err) {
-      if (err instanceof ErrorNotFound) {
+      logger.error({ err }, "failed to get user");
+
+      if (err instanceof UserNotFoundError) {
         logger.error(`could not find user ${req.params.id}`);
         res.sendStatus(404);
         return;

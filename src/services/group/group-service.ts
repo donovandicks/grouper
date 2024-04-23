@@ -9,6 +9,7 @@ import {
 } from "../../domain";
 import type { AccessController } from "../access-control";
 import type { Datastore } from "../datastore";
+import { GroupNotFoundError } from "./errors";
 
 export class GroupService {
   ac: AccessController;
@@ -27,20 +28,20 @@ export class GroupService {
     return await this.db.listGroups();
   }
 
-  async getGroup(id: GroupID): Promise<GroupDTO | undefined> {
+  async getGroup(id: GroupID): Promise<GroupDTO> {
     const group = await this.db.getGroup(id);
     if (!group) {
-      return undefined;
+      throw new GroupNotFoundError(id);
     }
 
     return { ...group, members: (await this.getGroupMembers(group.id)) ?? [] };
   }
 
-  async getGroupMembers(id: GroupID): Promise<User[] | undefined> {
+  async getGroupMembers(id: GroupID): Promise<User[]> {
     const group = await this.db.getGroup(id);
 
     if (!group) {
-      return undefined;
+      throw new GroupNotFoundError(id);
     }
 
     return await this.db.getGroupMembers(id);
@@ -49,10 +50,10 @@ export class GroupService {
   async queryGroupMembers(
     id: GroupID,
     params: { userId?: UserID; email?: string },
-  ): Promise<User[] | undefined> {
+  ): Promise<User[]> {
     const group = await this.db.getGroup(id);
     if (!group) {
-      return undefined;
+      throw new GroupNotFoundError(id);
     }
 
     const members = await this.db.getGroupMembers(group.id);
@@ -68,11 +69,11 @@ export class GroupService {
     });
   }
 
-  async getGroupHistory(id: GroupID): Promise<Event[] | undefined> {
+  async getGroupHistory(id: GroupID): Promise<Event[]> {
     const group = await this.db.getGroup(id);
 
     if (!group) {
-      return undefined;
+      throw new GroupNotFoundError(id);
     }
 
     const timeline = [{ type: EventType.Create, timestamp: group.createdAt, data: group } as Event];
@@ -101,39 +102,29 @@ export class GroupService {
     return this.db.deleteGroup(id);
   }
 
-  async addMemberToGroup(group: GroupID, user: UserID): Promise<boolean | undefined> {
+  async addMemberToGroup(group: GroupID, user: UserID): Promise<void> {
     if (this.ac.userExcludedFromGroup(group, user)) {
       return;
     }
 
     const alreadyMember = await this.queryGroupMembers(group, { userId: user });
-    if (alreadyMember === undefined) {
-      return undefined;
-    }
-
     if (alreadyMember.length > 0) {
-      return true;
+      return;
     }
 
     await this.db.addGroupMember(group, user);
-    return true;
   }
 
-  async removeMemberFromGroup(group: GroupID, user: UserID): Promise<boolean | undefined> {
+  async removeMemberFromGroup(group: GroupID, user: UserID): Promise<void> {
     if (this.ac.userAllowedInGroup(group, user)) {
       return;
     }
 
     const alreadyMember = await this.queryGroupMembers(group, { userId: user });
-    if (alreadyMember === undefined) {
-      return undefined;
-    }
-
     if (alreadyMember.length === 0) {
-      return true;
+      return;
     }
 
     await this.db.removeGroupMember(group, user);
-    return true;
   }
 }
