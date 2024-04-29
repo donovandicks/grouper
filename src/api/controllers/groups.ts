@@ -1,15 +1,18 @@
 import type { Event, Group, GroupID, UserID } from "../../domain";
 import { GroupNotFoundError, GroupService } from "../../services/group";
+import { GroupMemberService } from "../../services/group-member";
 import { logger } from "../../utils/telemtery";
 import { ERR_INTERNAL_SERVER, type ErrorMessage } from "../errors";
 import type { CreateGroupDTO, GroupDTO } from "../models";
 import type { Express, Request, Response } from "express";
 
 export class GroupsController {
-  gs: GroupService;
+  private gs: GroupService;
+  private gms: GroupMemberService;
 
-  constructor(gs: GroupService) {
+  constructor(gs: GroupService, gms: GroupMemberService) {
     this.gs = gs;
+    this.gms = gms;
   }
 
   registerRoutes(app: Express) {
@@ -53,7 +56,7 @@ export class GroupsController {
   async getGroup(req: Request, res: Response<GroupDTO | ErrorMessage>) {
     try {
       const group = await this.gs.getGroup(req.params?.id as GroupID);
-      const members = await this.gs.getGroupMembers(group.id);
+      const members = await this.gms.getGroupMembers(group.id);
       res.json({ ...group, members: members ?? [] });
     } catch (err) {
       logger.error({ err }, "failed to find group");
@@ -69,7 +72,7 @@ export class GroupsController {
 
   async getGroupMembers(req: Request, res: Response) {
     try {
-      const members = await this.gs.getGroupMembers(req.params?.id as GroupID, {
+      const members = await this.gms.getGroupMembers(req.params?.id as GroupID, {
         userId: (req.query.userId as UserID) || undefined,
         name: (req.query.name as string) || undefined,
         email: (req.query.email as string) || undefined,
@@ -89,7 +92,7 @@ export class GroupsController {
 
   async addGroupMember(req: Request<{ id: GroupID }, Response, { userId: UserID }>, res: Response) {
     try {
-      await this.gs.addMemberToGroup(req.params?.id, req.body?.userId);
+      await this.gms.addMemberToGroup(req.params?.id, req.body?.userId);
       res.sendStatus(200);
     } catch (err) {
       logger.error({ err }, "failed to add member to group");
@@ -105,7 +108,7 @@ export class GroupsController {
 
   async removeGroupMember(req: Request<{ groupId: GroupID; memberId: UserID }>, res: Response) {
     try {
-      await this.gs.removeMemberFromGroup(req.params?.groupId, req.params?.memberId);
+      await this.gms.removeMemberFromGroup(req.params?.groupId, req.params?.memberId);
       res.sendStatus(200);
     } catch (err) {
       logger.error(err, "failed to remove user from group");

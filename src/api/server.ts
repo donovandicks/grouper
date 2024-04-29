@@ -1,8 +1,8 @@
 import { AppConfig } from "../config/contants";
 import { getConfig, runMigrations } from "../config/database";
-import { InMemoryAc } from "../services/access-control";
 import { PostgresDatastore, type Datastore } from "../services/datastore";
-import { GroupService } from "../services/group/group-service";
+import { GroupMemberService } from "../services/group-member";
+import { GroupService } from "../services/group/service";
 import { UserService } from "../services/user/user-service";
 import { currentEnv } from "../utils/env";
 import { initLogger, logger } from "../utils/telemtery";
@@ -18,10 +18,11 @@ initLogger(currentEnv());
 
 const pool = new Pool(getConfig());
 const db: Datastore = new PostgresDatastore(pool);
-const ac = new InMemoryAc();
+// const ac = new InMemoryAc();
 
-const gs = new GroupService(ac, db);
-const gc = new GroupsController(gs);
+const gs = new GroupService(db);
+const gms = new GroupMemberService(db);
+const gc = new GroupsController(gs, gms);
 
 const us = new UserService(db);
 const uc = new UsersController(us);
