@@ -1,6 +1,8 @@
 import { logger } from "../../../utils/telemtery";
 import type { Pool, PoolClient, QueryResult } from "pg";
 
+type ParameterType = string | number | Date | null | Map<string, object>;
+
 export class Transactor {
   private pool: Pool;
   private conn: PoolClient | undefined;
@@ -43,10 +45,7 @@ export class Transactor {
    * @param params Optional array of parameters to for the SQL query
    * @returns QueryResult containing affected rows or requested return data
    */
-  async query(
-    sql: string,
-    params: Array<string | number | Date | null> = [],
-  ): Promise<QueryResult> {
+  async query(sql: string, params: Array<ParameterType> = []): Promise<QueryResult> {
     try {
       // @ts-expect-error Parameters _can_ be a nullable array
       const res = await (await this.acquire()).query(sql, params);
@@ -71,7 +70,7 @@ export class Transactor {
    * @param params Optional array of parameters for the SQL query
    * @returns QueryResult containing affected rows or requested return data
    */
-  async exec(sql: string, params?: Array<string | null>): Promise<QueryResult> {
+  async exec(sql: string, params?: Array<ParameterType>): Promise<QueryResult> {
     try {
       await this.start();
       const res = await this.query(sql, params);
