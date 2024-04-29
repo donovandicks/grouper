@@ -1,6 +1,6 @@
 FROM oven/bun:alpine AS builder
 
-ARG BUILD_FLAGS="--minify --sourcemap"
+ARG BUILD_FLAGS="--minify"
 
 # Set working directory
 WORKDIR /usr/
