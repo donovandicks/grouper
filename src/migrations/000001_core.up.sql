@@ -67,6 +67,7 @@ CREATE TABLE IF NOT EXISTS tbl_users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     NAME TEXT,
     email TEXT UNIQUE,
+    attributes JSONB,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );

@@ -1,6 +1,8 @@
-import type { UUID } from "crypto";
+import { type UUID } from "crypto";
 
-export type GroupID = UUID;
+const brand = Symbol("brand");
+
+export type GroupID = UUID & { [brand]: "GroupID" };
 
 export type Group = {
   id: GroupID;

@@ -149,7 +149,11 @@ export class UserRepository extends Repository {
   async list(filter?: (user: User) => boolean): Promise<User[]> {
     return (
       await this.tx.query(
-        `SELECT id, name, email, created_at AS "createdAt", updated_at AS "updatedAt" FROM ${this.tblName};`,
+        `
+        SELECT
+          id, name, email, attributes, created_at AS "createdAt", updated_at AS "updatedAt"
+        FROM ${this.tblName};
+        `,
       )
     ).rows.filter(filter ?? (() => true)) as User[];
   }
@@ -158,11 +162,11 @@ export class UserRepository extends Repository {
     return (
       await this.tx.exec(
         `
-        INSERT INTO ${this.tblName} (name, email)
-        VALUES ($1, $2)
-        RETURNING id, name, email, created_at AS "createdAt", updated_at AS "updatedAt";
+        INSERT INTO ${this.tblName} (name, email, attributes)
+        VALUES ($1, $2, $3)
+        RETURNING id, name, email, attributes, created_at AS "createdAt", updated_at AS "updatedAt";
         `,
-        [user.name, user.email],
+        [user.name, user.email, user.attributes ?? new Map()],
       )
     ).rows[0] as User;
   }
@@ -171,7 +175,8 @@ export class UserRepository extends Repository {
     return (
       await this.tx.query(
         `
-        SELECT id, name, email, created_at AS "createdAt", updated_at AS "updatedAt"
+        SELECT
+          id, name, email, attributes, created_at AS "createdAt", updated_at AS "updatedAt"
         FROM ${this.tblName}
         WHERE id = $1;
         `,
