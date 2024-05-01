@@ -1,6 +1,7 @@
 import { AppConfig } from "../config/contants";
 import { getConfig, runMigrations } from "../config/database";
 import { PostgresDatastore, type Datastore } from "../services/datastore";
+import { GroupGenerationService } from "../services/group-generation";
 import { GroupMemberService } from "../services/group-member";
 import { GroupService } from "../services/group/service";
 import { UserService } from "../services/user/user-service";
@@ -22,7 +23,8 @@ const db: Datastore = new PostgresDatastore(pool);
 
 const gs = new GroupService(db);
 const gms = new GroupMemberService(db);
-const gc = new GroupsController(gs, gms);
+const ggs = new GroupGenerationService(db);
+const gc = new GroupsController(gs, gms, ggs);
 
 const us = new UserService(db);
 const uc = new UsersController(us);

@@ -1,5 +1,6 @@
 import type { Event, Group, GroupID, UserID } from "../../domain";
 import { GroupNotFoundError, GroupService } from "../../services/group";
+import type { GroupGenerationService } from "../../services/group-generation";
 import { GroupMemberService } from "../../services/group-member";
 import { logger } from "../../utils/telemtery";
 import { ERR_INTERNAL_SERVER, type ErrorMessage } from "../errors";
@@ -9,22 +10,25 @@ import type { Express, Request, Response } from "express";
 export class GroupsController {
   private gs: GroupService;
   private gms: GroupMemberService;
+  private ggs: GroupGenerationService;
 
-  constructor(gs: GroupService, gms: GroupMemberService) {
+  constructor(gs: GroupService, gms: GroupMemberService, ggs: GroupGenerationService) {
     this.gs = gs;
     this.gms = gms;
+    this.ggs = ggs;
   }
 
   registerRoutes(app: Express) {
     /* eslint-disable @typescript-eslint/no-misused-promises */
-    app.post("/groups", this.createGroup.bind(this));
     app.get("/groups", this.listGroups.bind(this));
+    app.post("/groups", this.createGroup.bind(this));
     app.get("/groups/:id", this.getGroup.bind(this));
     app.delete("/groups/:id", this.deleteGroup.bind(this));
     app.get("/groups/:id/members", this.getGroupMembers.bind(this));
     app.post("/groups/:id/members", this.addGroupMember.bind(this));
     app.delete("/groups/:groupId/members/:memberId", this.removeGroupMember.bind(this));
     app.get("/groups/:id/history", this.getGroupHistory.bind(this));
+    app.post("/groups/generate", this.generateGroupsByAttribute.bind(this));
     /* eslint-enable @typescript-eslint/no-misused-promises */
   }
 
@@ -140,15 +144,28 @@ export class GroupsController {
   async getGroupHistory(req: Request<{ id: GroupID }>, res: Response<Event[] | ErrorMessage>) {
     try {
       const history = await this.gs.getGroupHistory(req.params.id);
-      res.json(history).status(200);
+      res.status(200).json(history);
     } catch (err) {
       logger.error({ err }, "failed to get group history");
 
       if (err instanceof GroupNotFoundError) {
-        res.json({ message: err.message, statusCode: 404 }).status(404);
+        res.status(404).json({ message: err.message, statusCode: 404 });
         return;
       }
 
+      res.status(500).json(ERR_INTERNAL_SERVER);
+    }
+  }
+
+  async generateGroupsByAttribute(
+    req: Request<object, object, { attribute: string }>,
+    res: Response,
+  ) {
+    try {
+      const userBuckets = await this.ggs.generateByAttribute(req.body?.attribute);
+      res.status(200).json(userBuckets);
+    } catch (err) {
+      logger.error({ err }, "failed to generate groups based on user attributes");
       res.status(500).json(ERR_INTERNAL_SERVER);
     }
   }
