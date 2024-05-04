@@ -1,7 +1,7 @@
 import { logger } from "../../../utils/telemtery";
 import type { Pool, PoolClient, QueryResult } from "pg";
 
-type ParameterType = string | number | Date | null | Map<string, object>;
+type ParameterType = string | number | Date | null | object | boolean;
 
 export class Transactor {
   private pool: Pool;
