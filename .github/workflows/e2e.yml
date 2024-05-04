@@ -25,6 +25,15 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+      redis6:
+        image: redis:6
+        ports:
+          - 6380:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
     runs-on: ubuntu-latest
     env:
       POSTGRES_USER: test
@@ -34,6 +43,8 @@ jobs:
       POSTGRES_PORT: "5433"
       APP_HOST: "0.0.0.0"
       APP_PORT: "3000"
+      REDIS_HOST: "0.0.0.0"
+      REDIS_PORT: "6380"
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
