@@ -1,0 +1,1 @@
+export { RuleProcessorService } from "./service";
