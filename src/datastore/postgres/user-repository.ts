@@ -1,5 +1,5 @@
-import type { CreateUserDTO } from "../../../api/models";
-import type { User, UserID } from "../../../domain";
+import type { CreateUserDTO } from "../../api/models";
+import type { User, UserID } from "../../domain";
 import { Repository } from "./repository";
 import type { Pool } from "pg";
 

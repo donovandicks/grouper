@@ -1,6 +1,6 @@
 import type { CreateRuleDTO } from "../../api/models";
+import type { Datastore } from "../../datastore";
 import type { User } from "../../domain";
-import type { Datastore } from "../datastore";
 
 type GeneratedGroup = {
   [key: string]: {

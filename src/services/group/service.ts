@@ -1,6 +1,6 @@
 import type { CreateGroupDTO, GroupDTO } from "../../api/models";
+import type { Datastore } from "../../datastore";
 import { EventType, type Event, type Group, type GroupID } from "../../domain";
-import type { Datastore } from "../datastore";
 import { GroupNotFoundError } from "../errors";
 
 export class GroupService {

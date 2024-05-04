@@ -1,5 +1,6 @@
 import { AppConfig } from "../config/contants";
 import { getConfig, runMigrations } from "../config/database";
+import { PostgresDatastore, type Datastore } from "../datastore";
 import {
   GroupGenerationService,
   GroupMemberService,
@@ -7,7 +8,6 @@ import {
   RuleService,
   UserService,
 } from "../services";
-import { PostgresDatastore, type Datastore } from "../services/datastore";
 import { currentEnv } from "../utils/env";
 import { initLogger, logger } from "../utils/telemtery";
 import {

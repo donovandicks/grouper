@@ -1,4 +1,4 @@
-import { Transactor } from "../services/datastore/postgres/transactor";
+import { Transactor } from "../datastore/postgres/transactor";
 import { logger } from "./telemtery";
 import { readFileSync, readdirSync } from "fs";
 import { basename, join } from "path";

@@ -1,6 +1,6 @@
-import type { CreateGroupDTO } from "../../../api/models";
-import type { Group, GroupID } from "../../../domain";
-import { toKebab } from "../../../utils/domain";
+import type { CreateGroupDTO } from "../../api/models";
+import type { Group, GroupID } from "../../domain";
+import { toKebab } from "../../utils/domain";
 import { Repository } from "./repository";
 import type { Pool } from "pg";
 

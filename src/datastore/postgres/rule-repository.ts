@@ -1,5 +1,5 @@
-import type { CreateRuleDTO } from "../../../api/models";
-import type { Rule } from "../../../domain/rule";
+import type { CreateRuleDTO } from "../../api/models";
+import type { Rule } from "../../domain/rule";
 import { Repository } from "./repository";
 import type { Pool } from "pg";
 

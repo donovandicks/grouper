@@ -1,7 +1,7 @@
 import { runMigrations } from "../../config/database";
+import { PostgresDatastore } from "../../datastore";
+import { Transactor } from "../../datastore/postgres/transactor";
 import { EventType } from "../../domain";
-import { PostgresDatastore } from "../../services/datastore";
-import { Transactor } from "../../services/datastore/postgres/transactor";
 import { GroupMemberService } from "../../services/group-member";
 import { GroupService } from "../../services/group/service";
 import { UserService } from "../../services/user/user-service";

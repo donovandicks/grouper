@@ -1,6 +1,6 @@
 import type { CreateRuleDTO } from "../../api/models";
+import type { Datastore } from "../../datastore";
 import type { Rule } from "../../domain/rule";
-import type { Datastore } from "../datastore";
 
 export class RuleService {
   private db: Datastore;
