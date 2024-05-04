@@ -1,3 +1,5 @@
+import type { UUID } from "crypto";
+
 export type Combinator = "and" | "or";
 
 export type Condition = {
@@ -16,9 +18,11 @@ export type ConditionMap =
   | { or: ConditionList | ConditionMapList; and?: never };
 
 export type Rule = {
-  id?: number;
+  id: UUID;
   name: string;
   description: string;
   userManaged: boolean;
   condition: Condition | ConditionMap;
+  createdAt: Date;
+  updatedAt: Date;
 };
