@@ -2,6 +2,12 @@ name: End2End Test Workflow
 
 on:
   workflow_call:
+    inputs:
+      bun-version:
+        description: The version of Bun to use
+        type: string
+        required: true
+        default: "1.1.7"
 
 jobs:
   e2e:
@@ -32,7 +38,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v1
         with:
-          bun-version: "1.1.1"
+          bun-version: ${{ inputs.bun-version }}
       - run: bun install --production --ignore-scripts
       - run: bun run start:bg
       - run: bun run test:e2e
