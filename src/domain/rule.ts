@@ -1,4 +1,3 @@
-export type RuleType = "simple" | "complex";
 export type Combinator = "and" | "or";
 
 export type Condition = {
@@ -16,11 +15,10 @@ export type ConditionMap =
   | { and: ConditionList | ConditionMapList; or?: never }
   | { or: ConditionList | ConditionMapList; and?: never };
 
-export type Rule<RuleType> = {
+export type Rule = {
   id?: number;
   name: string;
   description: string;
   userManaged: boolean;
-  type: RuleType; // debatable value
-  condition: RuleType extends "complex" ? ConditionMap : Condition;
+  condition: Condition | ConditionMap;
 };
