@@ -1,11 +1,11 @@
-import type { Group } from "../../domain/group";
+import type { Group, GroupID } from "../../domain/group";
 import { describe, expect, it } from "bun:test";
 import { randomUUID } from "crypto";
 
 describe("Group Model", () => {
   it("should have id, name, and handle properties", () => {
     const group: Group = {
-      id: randomUUID(),
+      id: randomUUID() as GroupID,
       name: "Group 1",
       handle: "group1",
       createdAt: new Date(),
@@ -19,7 +19,7 @@ describe("Group Model", () => {
 
   it("should have id as GroupID type", () => {
     const group: Group = {
-      id: randomUUID(),
+      id: randomUUID() as GroupID,
       name: "Group 1",
       handle: "group1",
       createdAt: new Date(),
@@ -31,7 +31,7 @@ describe("Group Model", () => {
 
   it("should have name and handle as string type", () => {
     const group: Group = {
-      id: randomUUID(),
+      id: randomUUID() as GroupID,
       name: "Group 1",
       handle: "group1",
       createdAt: new Date(),

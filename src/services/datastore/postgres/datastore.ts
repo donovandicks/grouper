@@ -1,18 +1,24 @@
-import type { CreateGroupDTO, CreateUserDTO } from "../../../api/models";
+import type { CreateGroupDTO, CreateRuleDTO, CreateUserDTO } from "../../../api/models";
 import type { Group, GroupID, Membership, User, UserID } from "../../../domain";
+import type { Rule } from "../../../domain/rule";
 import type { Datastore } from "../index";
-import { GroupMemberRepository, GroupRepository, UserRepository } from "./repository";
+import { GroupMemberRepository } from "./group-member-repository";
+import { GroupRepository } from "./group-repository";
+import { RuleRepository } from "./rule-repository";
+import { UserRepository } from "./user-repository";
 import { Pool } from "pg";
 
 export class PostgresDatastore implements Datastore {
   private groupMembers: GroupMemberRepository;
   private users: UserRepository;
   private groups: GroupRepository;
+  private rules: RuleRepository;
 
   constructor(pool: Pool) {
     this.groupMembers = new GroupMemberRepository(pool);
     this.users = new UserRepository(pool);
     this.groups = new GroupRepository(pool);
+    this.rules = new RuleRepository(pool);
   }
 
   // Members //
@@ -65,5 +71,14 @@ export class PostgresDatastore implements Datastore {
 
   async deleteUser(id: UserID): Promise<User | undefined> {
     return this.users.delete(id);
+  }
+
+  // Rules //
+  async listRules(): Promise<Rule[]> {
+    return this.rules.list();
+  }
+
+  async createRule(rule: CreateRuleDTO): Promise<Rule> {
+    return this.rules.create(rule);
   }
 }

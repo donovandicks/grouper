@@ -1,13 +1,21 @@
 import { AppConfig } from "../config/contants";
 import { getConfig, runMigrations } from "../config/database";
-import { InMemoryAc } from "../services/access-control";
+import {
+  GroupGenerationService,
+  GroupMemberService,
+  GroupService,
+  RuleService,
+  UserService,
+} from "../services";
 import { PostgresDatastore, type Datastore } from "../services/datastore";
-import { GroupService } from "../services/group/group-service";
-import { UserService } from "../services/user/user-service";
 import { currentEnv } from "../utils/env";
 import { initLogger, logger } from "../utils/telemtery";
-import { GroupsController, UsersController } from "./controllers";
-import { HealthController } from "./controllers/health";
+import {
+  GroupsController,
+  HealthController,
+  RulesController,
+  UsersController,
+} from "./controllers";
 import { registerGracefulShutdownHandlers } from "./shutdown";
 import express from "express";
 import http from "http";
@@ -18,13 +26,18 @@ initLogger(currentEnv());
 
 const pool = new Pool(getConfig());
 const db: Datastore = new PostgresDatastore(pool);
-const ac = new InMemoryAc();
+// const ac = new InMemoryAc();
 
-const gs = new GroupService(ac, db);
-const gc = new GroupsController(gs);
+const gs = new GroupService(db);
+const gms = new GroupMemberService(db);
+const ggs = new GroupGenerationService(db);
+const gc = new GroupsController(gs, gms, ggs);
 
 const us = new UserService(db);
 const uc = new UsersController(us);
+
+const rs = new RuleService(db);
+const rc = new RulesController(rs);
 
 const hc = new HealthController();
 
@@ -45,6 +58,7 @@ export async function main() {
   hc.registerRoute(app);
   uc.registerRoutes(app);
   gc.registerRoutes(app);
+  rc.registerRoutes(app);
 
   logger.info("starting http server");
   http

@@ -1,9 +1,9 @@
 import { runMigrations } from "../../config/database";
 import { EventType } from "../../domain";
-import { InMemoryAc } from "../../services/access-control";
 import { PostgresDatastore } from "../../services/datastore";
 import { Transactor } from "../../services/datastore/postgres/transactor";
-import { GroupService } from "../../services/group/group-service";
+import { GroupMemberService } from "../../services/group-member";
+import { GroupService } from "../../services/group/service";
 import { UserService } from "../../services/user/user-service";
 import { initLogger } from "../../utils/telemtery";
 import { TestConfig } from "./constants";
@@ -15,6 +15,7 @@ initLogger("test");
 
 let tx: Transactor;
 let gs: GroupService;
+let gms: GroupMemberService;
 let us: UserService;
 let pool: Pool;
 
@@ -42,9 +43,9 @@ const makeCleanTableSql = (name: string): string => {
 describe("service and database integration tests", () => {
   beforeAll(() => {
     pool = new Pool(TestConfig);
-    const ac = new InMemoryAc();
     const ds = new PostgresDatastore(pool);
-    gs = new GroupService(ac, ds);
+    gs = new GroupService(ds);
+    gms = new GroupMemberService(ds);
     us = new UserService(ds);
   });
 
@@ -99,12 +100,12 @@ describe("service and database integration tests", () => {
     ];
 
     // WHEN
-    await gs.addMemberToGroup(group.id, user_1.id);
+    await gms.addMemberToGroup(group.id, user_1.id);
     sleepSync(5);
-    await gs.addMemberToGroup(group.id, user_2.id);
+    await gms.addMemberToGroup(group.id, user_2.id);
     sleepSync(5);
-    await gs.removeMemberFromGroup(group.id, user_1.id);
-    await gs.addMemberToGroup(group.id, user_1.id);
+    await gms.removeMemberFromGroup(group.id, user_1.id);
+    await gms.addMemberToGroup(group.id, user_1.id);
     const history = await gs.getGroupHistory(group.id);
 
     // THEN
@@ -127,10 +128,10 @@ describe("service and database integration tests", () => {
     ];
 
     // WHEN
-    await gs.addMemberToGroup(group.id, user.id);
-    await gs.addMemberToGroup(group.id, user.id);
-    await gs.removeMemberFromGroup(group.id, user.id);
-    await gs.removeMemberFromGroup(group.id, user.id);
+    await gms.addMemberToGroup(group.id, user.id);
+    await gms.addMemberToGroup(group.id, user.id);
+    await gms.removeMemberFromGroup(group.id, user.id);
+    await gms.removeMemberFromGroup(group.id, user.id);
     const history = await gs.getGroupHistory(group.id);
 
     // THEN

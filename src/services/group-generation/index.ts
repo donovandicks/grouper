@@ -1,0 +1,1 @@
+export { GroupGenerationService } from "./service";

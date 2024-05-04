@@ -1,5 +1,6 @@
-import type { CreateGroupDTO, CreateUserDTO } from "../../api/models";
+import type { CreateGroupDTO, CreateRuleDTO, CreateUserDTO } from "../../api/models";
 import type { Group, GroupID, Membership, User, UserID } from "../../domain";
+import type { Rule } from "../../domain/rule";
 
 export interface Datastore {
   // Members
@@ -19,4 +20,8 @@ export interface Datastore {
   listUsers(): Promise<User[]>;
   getUser(id: UserID): Promise<User | undefined>;
   deleteUser(id: UserID): Promise<User | undefined>;
+
+  // Rules
+  createRule(rule: CreateRuleDTO): Promise<Rule>;
+  listRules(): Promise<Rule[]>;
 }

@@ -1,6 +1,9 @@
 import type { UUID } from "crypto";
 
-export type UserID = UUID;
+const brand = Symbol("brand");
+
+export type UserID = UUID & { [brand]: "UserID" };
+export type UserAttributes = Map<string, string | Date | boolean>;
 
 export type User = {
   id: UserID;
@@ -8,4 +11,5 @@ export type User = {
   email: string;
   createdAt: Date;
   updatedAt: Date;
+  attributes: UserAttributes;
 };

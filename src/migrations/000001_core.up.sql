@@ -42,7 +42,7 @@ CREATE TABLE tbl_audit (
 -- TBL_GROUPS
 CREATE TABLE IF NOT EXISTS tbl_groups (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    NAME TEXT,
+    name TEXT,
     handle TEXT,
     group_type TEXT,
     created_at TIMESTAMP DEFAULT NOW(),
@@ -65,8 +65,9 @@ UPDATE
 -- TBL_USERS
 CREATE TABLE IF NOT EXISTS tbl_users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    NAME TEXT,
+    name TEXT,
     email TEXT UNIQUE,
+    attributes JSONB,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );
@@ -110,3 +111,14 @@ INSERT
     OR
 UPDATE
     OR DELETE ON tbl_group_members FOR EACH ROW EXECUTE FUNCTION fn_insert_audit_log();
+
+-- TBL_RULES
+CREATE TABLE IF NOT EXISTS tbl_rules (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT,
+    description TEXT,
+    user_managed BOOLEAN,
+    condition JSONB,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
