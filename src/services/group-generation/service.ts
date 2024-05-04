@@ -1,11 +1,11 @@
+import type { CreateRuleDTO } from "../../api/models";
 import type { User } from "../../domain";
-import type { Rule } from "../../domain/rule";
 import type { Datastore } from "../datastore";
 
 type GeneratedGroup = {
   [key: string]: {
     users: User[];
-    rule: Rule;
+    rule: CreateRuleDTO;
   };
 };
 
@@ -52,25 +52,6 @@ export class GroupGenerationService {
       };
     }, {} as GeneratedGroup);
   }
-
-  // for (const [i, bucket] of Object.keys(buckets).entries()) {
-  //   const rule: Rule<"simple"> = {
-  //     id: i,
-  //     name: `${attrName} ${bucket}`,
-  //     description: `Users whose ${attrName} is ${bucket}`,
-  //     userManaged: false,
-  //     type: "simple",
-  //     condition: {
-  //       attribute: attrName,
-  //       operation: "equals",
-  //       value: bucket,
-  //     },
-  //   };
-
-  //   logger.info({ bucket, rule }, "would generate rule");
-  // }
-
-  // return buckets;
 
   // for (const [bucket, users] of Object.entries(userBuckets)) {
   //   if (["invalid", "missing"].includes(bucket)) {
