@@ -12,7 +12,7 @@ export class Cache {
   }
 
   private async acquire(): Promise<RedisClientType> {
-    if (!this.conn) {
+    if (this.conn === undefined) {
       this.conn = await this.client.connect();
     }
 
@@ -21,7 +21,7 @@ export class Cache {
 
   // @ts-expect-error WIP TODO: determine if this level of connection management is required
   private async release(): Promise<void> {
-    if (this.conn) {
+    if (this.conn !== undefined) {
       await this.conn.disconnect();
     }
   }

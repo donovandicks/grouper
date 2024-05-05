@@ -2,6 +2,7 @@ import type { CreateRuleDTO } from "../../api/models";
 import { EventChannels, type Cache } from "../../cache";
 import type { Datastore } from "../../datastore";
 import type { Rule } from "../../domain/rule";
+import { logger } from "../../utils/telemtery";
 
 export class RuleService {
   private db: Datastore;
@@ -22,7 +23,11 @@ export class RuleService {
 
   async createRule(rule: CreateRuleDTO): Promise<Rule> {
     const created = await this.db.createRule(rule);
-    await this.cache.publish(EventChannels.RuleCreated, JSON.stringify(created));
+    this.cache
+      .publish(EventChannels.RuleCreated, JSON.stringify(created))
+      .catch((err: unknown) =>
+        logger.error({ err, rule }, "failed to publish message about rule creation"),
+      );
     return created;
   }
 }
