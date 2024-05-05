@@ -47,7 +47,7 @@ const uc = new UsersController(us);
 const rs = new RuleService(db, cache);
 const rc = new RulesController(rs);
 
-const rps = new RuleProcessorService(cache.clone());
+const rps = new RuleProcessorService(db, cache.clone());
 await rps.subscribeToChannels();
 
 const hc = new HealthController();
