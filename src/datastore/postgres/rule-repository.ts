@@ -12,14 +12,7 @@ export class RuleRepository extends Repository {
     return (
       await this.tx.query(
         `
-        SELECT
-          id,
-          name,
-          description,
-          user_managed AS "userManaged",
-          condition,
-          created_at AS "createdAt",
-          updated_at AS "updatedAt"
+        SELECT id, name, description, condition, created_at AS "createdAt", updated_at AS "updatedAt"
         FROM ${this.tblName};
         `,
       )
@@ -30,18 +23,11 @@ export class RuleRepository extends Repository {
     return (
       await this.tx.exec(
         `
-        INSERT INTO ${this.tblName} (name, description, user_managed, condition)
-        VALUES ($1, $2, $3, $4)
-        RETURNING
-          id,
-          name,
-          description,
-          user_managed AS "userManaged",
-          condition,
-          created_at AS "createdAt",
-          updated_at AS "updatedAt";
+        INSERT INTO ${this.tblName} (name, description, condition)
+        VALUES ($1, $2, $3)
+        RETURNING id, name, description, condition, created_at AS "createdAt", updated_at AS "updatedAt";
         `,
-        [rule.name, rule.description, rule.userManaged, rule.condition],
+        [rule.name, rule.description, rule.condition],
       )
     ).rows[0] as Rule;
   }

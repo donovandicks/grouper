@@ -40,7 +40,6 @@ export type Rule = {
   id: UUID;
   name: string;
   description: string;
-  userManaged: boolean;
   condition: Condition | ConditionMap;
   createdAt: Date;
   updatedAt: Date;

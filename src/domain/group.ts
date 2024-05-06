@@ -8,7 +8,7 @@ export type Group = {
   id: GroupID;
   name: string; // Display Name
   handle: string; // Computer Name
-  type?: string;
+  userManaged: boolean; // Whether the group's members are managed automatically by the system
   createdAt: Date;
   updatedAt: Date;
 };

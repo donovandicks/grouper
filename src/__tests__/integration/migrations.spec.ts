@@ -88,7 +88,7 @@ describe("service and database integration tests", () => {
 
   it("successfully captures group lifecycle", async () => {
     // GIVEN
-    const group = await gs.createGroup({ name: "Test" });
+    const group = await gs.createGroup({ name: "Test", userManaged: true });
     const user_1 = await us.createUser({ name: "John", email: "john@email.com" });
     const user_2 = await us.createUser({ name: "Jane", email: "jane@email.com" });
     const expectedHistoryData = [
@@ -119,7 +119,7 @@ describe("service and database integration tests", () => {
 
   it("does not repeat idempotent events", async () => {
     // GIVEN
-    const group = await gs.createGroup({ name: "Test" });
+    const group = await gs.createGroup({ name: "Test", userManaged: true });
     const user = await us.createUser({ name: "John", email: "john@email.com" });
     const expectedHistoryData = [
       { type: EventType.Create, data: group },

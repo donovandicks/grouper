@@ -44,7 +44,7 @@ CREATE TABLE IF NOT EXISTS tbl_groups (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT,
     handle TEXT,
-    group_type TEXT,
+    user_managed BOOLEAN,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );
@@ -117,7 +117,6 @@ CREATE TABLE IF NOT EXISTS tbl_rules (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT,
     description TEXT,
-    user_managed BOOLEAN,
     condition JSONB,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()

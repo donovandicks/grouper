@@ -42,7 +42,6 @@ export class GroupGenerationService {
           rule: {
             name: `${capWords(attrName)} ${bucket}`,
             description: `Users whose '${attrName}' is '${bucket}'`,
-            userManaged: false,
             condition: {
               attribute: attrName,
               operation: "equals",

@@ -13,7 +13,7 @@ export class GroupRepository extends Repository {
     return (
       await this.tx.query(
         `
-        SELECT id, name, handle, group_type AS type, created_at AS "createdAt", updated_at AS "updatedAt"
+        SELECT id, name, handle, user_managed AS "userManaged", created_at AS "createdAt", updated_at AS "updatedAt"
         FROM ${this.tblName}
         WHERE ${this.tblName}.id = $1;
         `,
@@ -25,7 +25,10 @@ export class GroupRepository extends Repository {
   async list(): Promise<Group[]> {
     return (
       await this.tx.query(
-        `SELECT id, name, handle, group_type AS type, created_at AS "createdAt", updated_at AS "updatedAt" FROM ${this.tblName};`,
+        `
+        SELECT id, name, handle, user_managed AS "userManaged", created_at AS "createdAt", updated_at AS "updatedAt"
+        FROM ${this.tblName};
+        `,
       )
     ).rows as Group[];
   }
@@ -34,11 +37,11 @@ export class GroupRepository extends Repository {
     return (
       await this.tx.query(
         `
-        INSERT INTO ${this.tblName} (name, handle, group_type)
+        INSERT INTO ${this.tblName} (name, handle, user_managed)
         VALUES ($1, $2, $3)
-        RETURNING id, name, handle, group_type AS type, created_at AS "createdAt", updated_at AS "updatedAt";
+        RETURNING id, name, handle, user_managed AS "userManaged", created_at AS "createdAt", updated_at AS "updatedAt";
         `,
-        [group.name, group.handle ?? toKebab(group.name), group.type ?? null],
+        [group.name, group.handle ?? toKebab(group.name), group.userManaged],
       )
     ).rows[0] as Group;
   }
@@ -49,7 +52,7 @@ export class GroupRepository extends Repository {
         `
         DELETE FROM ${this.tblName}
         WHERE id = $1
-        RETURNING id, name, handle, group_type AS type, created_at AS "createdAt", updated_at AS "updatedAt";
+        RETURNING id, name, handle, user_managed AS "userManaged", created_at AS "createdAt", updated_at AS "updatedAt";
         `,
         [id],
       )

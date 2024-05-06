@@ -9,7 +9,7 @@ export type GroupDTO = Group & { members: UserDTO[] };
 export type CreateGroupDTO = {
   name: string;
   handle?: string;
-  type?: string;
+  userManaged: boolean;
 };
 
-export type CreateRuleDTO = Pick<Rule, "name" | "description" | "userManaged" | "condition">;
+export type CreateRuleDTO = Pick<Rule, "name" | "description" | "condition">;
