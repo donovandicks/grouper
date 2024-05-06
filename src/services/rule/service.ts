@@ -23,11 +23,11 @@ export class RuleService {
 
   async createRule(rule: CreateRuleDTO): Promise<Rule> {
     const created = await this.db.createRule(rule);
-    this.cache
-      .publish(EventChannels.RuleCreated, JSON.stringify(created))
-      .catch((err: unknown) =>
-        logger.error({ err, rule }, "failed to publish message about rule creation"),
-      );
+    try {
+      await this.cache.publish(EventChannels.RuleCreated, JSON.stringify(created));
+    } catch (err) {
+      logger.error({ err, rule }, "failed to publish message about rule creation");
+    }
     return created;
   }
 }
