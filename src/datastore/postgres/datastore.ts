@@ -89,6 +89,10 @@ export class PostgresDatastore implements Datastore {
     return this.rules.get(ruleId);
   }
 
+  async deleteRule(ruleId: RuleID): Promise<Rule | undefined> {
+    return this.rules.delete(ruleId);
+  }
+
   // Rule Attachments //
   async attachRule(groupId: GroupID, ruleId: RuleID): Promise<void> {
     return this.ruleAttachments.attachRule(groupId, ruleId);

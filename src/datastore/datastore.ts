@@ -24,6 +24,7 @@ export interface Datastore {
   createRule(rule: CreateRuleDTO): Promise<Rule>;
   listRules(): Promise<Rule[]>;
   getRule(ruleId: RuleID): Promise<Rule | undefined>;
+  deleteRule(ruleId: RuleID): Promise<Rule | undefined>;
 
   // Rule Attachments
   attachRule(groupId: GroupID, ruleId: RuleID): Promise<void>;

@@ -44,4 +44,17 @@ export class RuleRepository extends Repository {
       )
     ).rows[0] as Rule;
   }
+
+  async delete(ruleId: RuleID): Promise<Rule | undefined> {
+    return (
+      await this.tx.exec(
+        `
+        DELETE FROM ${this.tblName}
+        WHERE id = $1
+        RETURNING id, name, description, condition, created_at AS "createdAt", updated_at AS "updatedAt";
+        `,
+        [ruleId],
+      )
+    ).rows[0] as Rule;
+  }
 }
