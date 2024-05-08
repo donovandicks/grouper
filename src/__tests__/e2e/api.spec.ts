@@ -27,6 +27,8 @@ describe("end to end suite", () => {
 
     // THEN
     expect(created.name).toEqual("Test");
+    expect(created.createdAt).not.toBe(null);
+    expect(created.updatedAt).not.toBe(null);
     expect(received).toEqual({ ...created, members: [] });
     expect(deleted).toEqual(created);
   });
