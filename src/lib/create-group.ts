@@ -1,30 +1,11 @@
-import type { GroupDTO } from "../api/models";
+import type { CreateGroupDTO, GroupDTO } from "../api/models";
 import { logger } from "../utils/telemtery";
-import { GROUPS_BASE_URL, HEADERS } from "./constants";
+import { GROUPS_BASE_URL } from "./constants";
+import { postData } from "./post-data";
 
-export const createGroup = async ({
-  name,
-  handle,
-  userManaged = true,
-}: {
-  name: string;
-  handle?: string;
-  userManaged?: boolean;
-}): Promise<GroupDTO> => {
-  logger.info({ name, handle, userManaged }, "creating group");
-
-  const data = JSON.stringify({ name, handle, userManaged });
-
-  const res = await fetch(GROUPS_BASE_URL, {
-    method: "POST",
-    headers: {
-      ...HEADERS,
-      "Content-Length": `${Buffer.byteLength(data)}`,
-    },
-    body: data,
-  });
-
-  const group = (await res.json()) as GroupDTO;
+export const createGroup = async (opts: CreateGroupDTO): Promise<GroupDTO> => {
+  logger.info(opts, "creating group");
+  const group = postData<CreateGroupDTO, GroupDTO>(GROUPS_BASE_URL, opts);
   logger.info(group, "created group");
   return group;
 };
