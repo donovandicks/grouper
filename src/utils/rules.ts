@@ -1,4 +1,5 @@
-import { Operators, conditionIsComplex, type Condition, type ConditionMap } from "../domain/rule";
+import { Operators, type Condition, type ConditionMap } from "../domain";
+import { conditionIsComplex } from "../domain/condition";
 import type { UserAttributes } from "../domain/user";
 
 const processSimpleCondition = (cond: Condition, attributes: UserAttributes): boolean => {
