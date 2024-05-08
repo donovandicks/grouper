@@ -135,7 +135,7 @@ CREATE TABLE IF NOT EXISTS tbl_rule_attachments (
     -- a group can only appear once in this association, i.e. 1 group cannot have > 1 rule
     group_id UUID UNIQUE NOT NULL REFERENCES tbl_groups(id) ON DELETE CASCADE,
     rule_id UUID NOT NULL REFERENCES tbl_rules(id) ON DELETE CASCADE,
-    created_at TIMESTAMP DEFAULT NOW(),
+    created_at TIMESTAMP DEFAULT NOW()
 );
 
 CREATE TRIGGER trg_set_rule_attachment_updated_at BEFORE
