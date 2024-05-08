@@ -4,11 +4,9 @@ import type { Rule } from "../../domain/rule";
 
 export class RuleService {
   private db: Datastore;
-  // private cache: Cache;
 
-  constructor(db: Datastore /* cache: Cache */) {
+  constructor(db: Datastore) {
     this.db = db;
-    // this.cache = cache;
   }
 
   async listRules(): Promise<Rule[]> {
@@ -21,10 +19,5 @@ export class RuleService {
 
   async createRule(rule: CreateRuleDTO): Promise<Rule> {
     return await this.db.createRule(rule);
-    // try {
-    //   await this.cache.publish(EventChannels.RuleCreated, JSON.stringify(created));
-    // } catch (err) {
-    //   logger.error({ err, rule }, "failed to publish message about rule creation");
-    // }
   }
 }

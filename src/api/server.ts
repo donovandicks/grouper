@@ -29,7 +29,7 @@ logger.info("connecting to database");
 const pool = new Pool(getConfig());
 const db: Datastore = new PostgresDatastore(pool);
 
-logger.info("connecting to cache");
+// logger.info("connecting to cache");
 // const cache: Cache = new Cache(getCacheConfig());
 
 // const ac = new InMemoryAc();

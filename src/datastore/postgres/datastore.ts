@@ -85,6 +85,10 @@ export class PostgresDatastore implements Datastore {
     return this.rules.create(rule);
   }
 
+  async getRule(ruleId: RuleID): Promise<Rule | undefined> {
+    return this.rules.get(ruleId);
+  }
+
   // Rule Attachments //
   async attachRule(groupId: GroupID, ruleId: RuleID): Promise<void> {
     return this.ruleAttachments.attachRule(groupId, ruleId);
