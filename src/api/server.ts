@@ -1,5 +1,3 @@
-import { Cache } from "../cache";
-import { getCacheConfig } from "../cache/config";
 import { AppConfig } from "../config/contants";
 import { getConfig, runMigrations } from "../config/database";
 import { PostgresDatastore, type Datastore } from "../datastore";
@@ -7,7 +5,7 @@ import {
   GroupGenerationService,
   GroupMemberService,
   GroupService,
-  RuleProcessorService,
+  RuleAttachmentService,
   RuleService,
   UserService,
 } from "../services";
@@ -32,23 +30,23 @@ const pool = new Pool(getConfig());
 const db: Datastore = new PostgresDatastore(pool);
 
 logger.info("connecting to cache");
-const cache: Cache = new Cache(getCacheConfig());
+// const cache: Cache = new Cache(getCacheConfig());
 
 // const ac = new InMemoryAc();
 
 const gs = new GroupService(db);
 const gms = new GroupMemberService(db);
 const ggs = new GroupGenerationService(db);
-const gc = new GroupsController(gs, gms, ggs);
+const ras = new RuleAttachmentService(db /* cache.clone() */);
+const gc = new GroupsController(gs, gms, ggs, ras);
 
 const us = new UserService(db);
 const uc = new UsersController(us);
 
-const rs = new RuleService(db, cache);
+const rs = new RuleService(db /* cache */);
 const rc = new RulesController(rs);
 
-const rps = new RuleProcessorService(db, cache.clone());
-await rps.subscribeToChannels();
+// await rps.subscribeToChannels();
 
 const hc = new HealthController();
 

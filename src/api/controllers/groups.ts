@@ -1,4 +1,5 @@
-import type { Event, Group, GroupID, UserID } from "../../domain";
+import type { Event, Group, GroupID, RuleID, UserID } from "../../domain";
+import type { RuleAttachmentService } from "../../services";
 import { GroupNotFoundError, GroupService } from "../../services/group";
 import type { GroupGenerationService } from "../../services/group-generation";
 import { GroupMemberService } from "../../services/group-member";
@@ -11,11 +12,18 @@ export class GroupsController {
   private gs: GroupService;
   private gms: GroupMemberService;
   private ggs: GroupGenerationService;
+  private ras: RuleAttachmentService;
 
-  constructor(gs: GroupService, gms: GroupMemberService, ggs: GroupGenerationService) {
+  constructor(
+    gs: GroupService,
+    gms: GroupMemberService,
+    ggs: GroupGenerationService,
+    ras: RuleAttachmentService,
+  ) {
     this.gs = gs;
     this.gms = gms;
     this.ggs = ggs;
+    this.ras = ras;
   }
 
   registerRoutes(app: Express) {
@@ -29,6 +37,8 @@ export class GroupsController {
     app.delete("/groups/:groupId/members/:memberId", this.removeGroupMember.bind(this));
     app.get("/groups/:id/history", this.getGroupHistory.bind(this));
     app.post("/groups/generate", this.generateGroupsByAttribute.bind(this));
+    app.put("/groups/:id/rule", this.attachRule.bind(this));
+    app.delete("/groups/:id/rule", this.detachRule.bind(this));
     /* eslint-enable @typescript-eslint/no-misused-promises */
   }
 
@@ -166,6 +176,29 @@ export class GroupsController {
       res.status(200).json(userBuckets);
     } catch (err) {
       logger.error({ err }, "failed to generate groups based on user attributes");
+      res.status(500).json(ERR_INTERNAL_SERVER);
+    }
+  }
+
+  async attachRule(
+    req: Request<{ id: GroupID }, object, { ruleId: RuleID }>,
+    res: Response<null | ErrorMessage>,
+  ) {
+    try {
+      await this.ras.attachRule(req.params.id, req.body.ruleId);
+      res.status(204);
+    } catch (err) {
+      logger.error({ err }, "failed to attach rule to group");
+      res.status(500).json(ERR_INTERNAL_SERVER);
+    }
+  }
+
+  async detachRule(req: Request<{ id: GroupID }>, res: Response<null | ErrorMessage>) {
+    try {
+      await this.ras.detachRule(req.params.id);
+      res.status(204);
+    } catch (err) {
+      logger.error({ err }, "failed to detach rule from group");
       res.status(500).json(ERR_INTERNAL_SERVER);
     }
   }
