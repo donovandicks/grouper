@@ -16,6 +16,16 @@ DROP TRIGGER IF EXISTS trg_group_audit_insert ON tbl_groups CASCADE;
 
 DROP TRIGGER IF EXISTS trg_user_audit_insert ON tbl_users CASCADE;
 
+DROP TRIGGER IF EXISTS trg_set_rule_updated_at ON tbl_rules CASCADE;
+
+DROP TRIGGER IF EXISTS trg_rule_audit_insert ON tbl_rules CASCADE;
+
+DROP TRIGGER IF EXISTS trg_set_rule_attachment_updated_at ON tbl_rules CASCADE;
+
+DROP TABLE IF EXISTS tbl_rule_attachments;
+
+DROP TABLE IF EXISTS tbl_rules;
+
 DROP TABLE IF EXISTS tbl_group_members;
 
 DROP TABLE IF EXISTS tbl_group_member_history;
