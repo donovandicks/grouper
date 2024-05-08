@@ -1,5 +1,5 @@
+import type { Datastore } from "../../datastore";
 import type { GroupID, User, UserID } from "../../domain";
-import type { Datastore } from "../datastore";
 import { GroupNotFoundError } from "../errors";
 
 export class GroupMemberService {

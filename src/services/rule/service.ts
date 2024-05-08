@@ -1,6 +1,6 @@
 import type { CreateRuleDTO } from "../../api/models";
-import type { Rule } from "../../domain/rule";
-import type { Datastore } from "../datastore";
+import type { Datastore } from "../../datastore";
+import type { Rule, RuleID } from "../../domain/rule";
 
 export class RuleService {
   private db: Datastore;
@@ -17,7 +17,15 @@ export class RuleService {
     return rules;
   }
 
+  async getRule(ruleId: RuleID): Promise<Rule | undefined> {
+    return await this.db.getRule(ruleId);
+  }
+
   async createRule(rule: CreateRuleDTO): Promise<Rule> {
-    return this.db.createRule(rule);
+    return await this.db.createRule(rule);
+  }
+
+  async deleteRule(ruleId: RuleID): Promise<Rule | undefined> {
+    return await this.db.deleteRule(ruleId);
   }
 }

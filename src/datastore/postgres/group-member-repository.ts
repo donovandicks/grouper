@@ -1,4 +1,4 @@
-import type { GroupID, Membership, UserID } from "../../../domain";
+import type { GroupID, Membership, UserID } from "../../domain";
 import { Repository } from "./repository";
 import type { Pool } from "pg";
 

@@ -1,12 +1,9 @@
 -- FUNCTIONS
-CREATE OR REPLACE FUNCTION fn_set_created_at() RETURNS TRIGGER AS $$ BEGIN NEW.created_at = NOW();
-
-RETURN NEW;
-
-END;
-
-$$ LANGUAGE plpgsql;
-
+-- CREATE OR REPLACE FUNCTION fn_set_created_at() RETURNS TRIGGER AS $$ BEGIN NEW.created_at = NOW();
+-- RETURN NEW;
+-- END;
+-- $$ LANGUAGE plpgsql;
+-- AUTOMATE updated_at COLUMNS
 CREATE OR REPLACE FUNCTION fn_set_updated_at() RETURNS TRIGGER AS $$ BEGIN NEW.updated_at = NOW();
 
 RETURN NEW;
@@ -15,6 +12,7 @@ END;
 
 $$ LANGUAGE plpgsql;
 
+-- CDC LOGIC
 CREATE OR REPLACE FUNCTION fn_insert_audit_log() RETURNS TRIGGER AS $$
 DECLARE audit_row_data JSONB;
 
@@ -44,14 +42,13 @@ CREATE TABLE IF NOT EXISTS tbl_groups (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT,
     handle TEXT,
-    group_type TEXT,
+    user_managed BOOLEAN,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TRIGGER trg_set_group_created_at BEFORE
-INSERT ON tbl_groups FOR EACH ROW EXECUTE FUNCTION fn_set_created_at();
-
+-- CREATE TRIGGER trg_set_group_created_at BEFORE
+-- INSERT ON tbl_groups FOR EACH ROW EXECUTE FUNCTION fn_set_created_at();
 CREATE TRIGGER trg_set_group_updated_at BEFORE
 UPDATE ON tbl_groups FOR EACH ROW EXECUTE FUNCTION fn_set_updated_at();
 
@@ -72,9 +69,8 @@ CREATE TABLE IF NOT EXISTS tbl_users (
     updated_at TIMESTAMP DEFAULT NOW()
 );
 
-CREATE TRIGGER trg_set_user_created_at BEFORE
-INSERT ON tbl_users FOR EACH ROW EXECUTE FUNCTION fn_set_created_at();
-
+-- CREATE TRIGGER trg_set_user_created_at BEFORE
+-- INSERT ON tbl_users FOR EACH ROW EXECUTE FUNCTION fn_set_created_at();
 CREATE TRIGGER trg_set_user_updated_at BEFORE
 UPDATE ON tbl_users FOR EACH ROW EXECUTE FUNCTION fn_set_updated_at();
 
@@ -85,7 +81,7 @@ INSERT
 UPDATE
     OR DELETE ON tbl_users FOR EACH ROW EXECUTE FUNCTION fn_insert_audit_log();
 
--- TBL_GROUP_MEMBERS
+-- TBL_GROUP_MEMBER_HISTORY
 CREATE TABLE IF NOT EXISTS tbl_group_member_history (
     id SERIAL PRIMARY KEY,
     group_id UUID NOT NULL REFERENCES tbl_groups(id),
@@ -94,6 +90,7 @@ CREATE TABLE IF NOT EXISTS tbl_group_member_history (
     end_date TIMESTAMP
 );
 
+-- TBL_GROUP_MEMBERS
 CREATE TABLE IF NOT EXISTS tbl_group_members (
     id SERIAL PRIMARY KEY,
     group_id UUID NOT NULL REFERENCES tbl_groups(id) ON
@@ -117,8 +114,29 @@ CREATE TABLE IF NOT EXISTS tbl_rules (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     name TEXT,
     description TEXT,
-    user_managed BOOLEAN,
     condition JSONB,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );
+
+CREATE TRIGGER trg_set_rule_updated_at BEFORE
+UPDATE ON tbl_rules FOR EACH ROW EXECUTE FUNCTION fn_set_updated_at();
+
+CREATE TRIGGER trg_rule_audit_insert
+AFTER
+INSERT
+    OR
+UPDATE
+    OR DELETE ON tbl_rules FOR EACH ROW EXECUTE FUNCTION fn_insert_audit_log();
+
+-- TBL_RULE_ATTACHMENTS
+CREATE TABLE IF NOT EXISTS tbl_rule_attachments (
+    id SERIAL PRIMARY KEY,
+    -- a group can only appear once in this association, i.e. 1 group cannot have > 1 rule
+    group_id UUID UNIQUE NOT NULL REFERENCES tbl_groups(id) ON DELETE CASCADE,
+    rule_id UUID NOT NULL REFERENCES tbl_rules(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TRIGGER trg_set_rule_attachment_updated_at BEFORE
+UPDATE ON tbl_rule_attachments FOR EACH ROW EXECUTE FUNCTION fn_set_updated_at();

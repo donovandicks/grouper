@@ -1,4 +1,4 @@
-import { logger } from "../../../utils/telemtery";
+import { logger } from "../../utils/telemtery";
 import type { Pool, PoolClient, QueryResult } from "pg";
 
 type ParameterType = string | number | Date | null | object | boolean;

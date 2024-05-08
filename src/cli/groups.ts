@@ -11,7 +11,8 @@ export const registerGroupCommands = (program: Command) => {
     .command("create")
     .description("Create a group")
     .option("-n, --name <name>", "group name")
-    .action(async (opts: { name: string }) => {
+    .option("--userManaged <userManaged>", "user managed")
+    .action(async (opts: { name: string; userManaged: boolean }) => {
       await createGroup(opts);
     });
 

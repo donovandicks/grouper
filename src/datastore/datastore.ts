@@ -1,6 +1,5 @@
-import type { CreateGroupDTO, CreateRuleDTO, CreateUserDTO } from "../../api/models";
-import type { Group, GroupID, Membership, User, UserID } from "../../domain";
-import type { Rule } from "../../domain/rule";
+import type { CreateGroupDTO, CreateRuleDTO, CreateUserDTO } from "../api/models";
+import type { Group, GroupID, Membership, Rule, RuleID, User, UserID } from "../domain";
 
 export interface Datastore {
   // Members
@@ -24,4 +23,10 @@ export interface Datastore {
   // Rules
   createRule(rule: CreateRuleDTO): Promise<Rule>;
   listRules(): Promise<Rule[]>;
+  getRule(ruleId: RuleID): Promise<Rule | undefined>;
+  deleteRule(ruleId: RuleID): Promise<Rule | undefined>;
+
+  // Rule Attachments
+  attachRule(groupId: GroupID, ruleId: RuleID): Promise<void>;
+  detachRule(groupId: GroupID): Promise<void>;
 }

@@ -1,6 +1,6 @@
 import type { CreateUserDTO } from "../../api/models";
+import type { Datastore } from "../../datastore";
 import type { User, UserID } from "../../domain";
-import type { Datastore } from "../datastore";
 import { UserNotFoundError } from "./errors";
 
 export class UserService {

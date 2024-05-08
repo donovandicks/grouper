@@ -11,13 +11,17 @@ export const getConfig = (options?: {
   port?: number;
   database?: string;
 }): ClientConfig => {
-  return {
+  const cfg = {
     user: options?.user ?? mustGetEnvVar("POSTGRES_USER"),
     password: options?.password ?? mustGetEnvVar("POSTGRES_PASSWORD"),
     host: options?.host ?? mustGetEnvVar("POSTGRES_HOST"),
     port: options?.port ?? Number(mustGetEnvVar("POSTGRES_PORT")),
     database: options?.database ?? mustGetEnvVar("POSTGRES_DB"),
   };
+
+  logger.info({ config: { ...cfg, password: "***" } }, "got database config options");
+
+  return cfg;
 };
 
 export async function runMigrations(

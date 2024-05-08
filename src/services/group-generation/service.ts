@@ -1,6 +1,7 @@
 import type { CreateRuleDTO } from "../../api/models";
+import type { Datastore } from "../../datastore";
 import type { User } from "../../domain";
-import type { Datastore } from "../datastore";
+import { capWords } from "../../utils/domain";
 
 type GeneratedGroup = {
   [key: string]: {
@@ -39,9 +40,8 @@ export class GroupGenerationService {
         [bucket]: {
           users: users ?? [],
           rule: {
-            name: `${attrName} ${bucket}`,
-            description: `Users whose ${attrName} is '${bucket}'`,
-            userManaged: false,
+            name: `${capWords(attrName)} ${bucket}`,
+            description: `Users whose '${attrName}' is '${bucket}'`,
             condition: {
               attribute: attrName,
               operation: "equals",
@@ -52,17 +52,4 @@ export class GroupGenerationService {
       };
     }, {} as GeneratedGroup);
   }
-
-  // for (const [bucket, users] of Object.entries(userBuckets)) {
-  //   if (["invalid", "missing"].includes(bucket)) {
-  //     return;
-  //   }
-
-  //   const us = users || [];
-  //   const g = { name: bucket } as CreateGroupDTO;
-  //   const group = await this.db.createGroup(g);
-  //   for (const user of us) {
-  //     await this.db.addGroupMember(group.id, user.id);
-  //   }
-  // }
 }

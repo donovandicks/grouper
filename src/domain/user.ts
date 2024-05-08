@@ -3,7 +3,8 @@ import type { UUID } from "crypto";
 const brand = Symbol("brand");
 
 export type UserID = UUID & { [brand]: "UserID" };
-export type UserAttributes = Map<string, string | Date | boolean>;
+export type UserAttributeTypes = string | Date | number | boolean;
+export type UserAttributes = { [key: string]: UserAttributeTypes };
 
 export type User = {
   id: UserID;

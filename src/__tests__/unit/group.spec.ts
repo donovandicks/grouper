@@ -8,6 +8,7 @@ describe("Group Model", () => {
       id: randomUUID() as GroupID,
       name: "Group 1",
       handle: "group1",
+      userManaged: true,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -22,6 +23,7 @@ describe("Group Model", () => {
       id: randomUUID() as GroupID,
       name: "Group 1",
       handle: "group1",
+      userManaged: true,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
@@ -34,6 +36,7 @@ describe("Group Model", () => {
       id: randomUUID() as GroupID,
       name: "Group 1",
       handle: "group1",
+      userManaged: true,
       createdAt: new Date(),
       updatedAt: new Date(),
     };

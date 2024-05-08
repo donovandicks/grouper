@@ -1,9 +1,10 @@
-import type { CreateGroupDTO, CreateRuleDTO, CreateUserDTO } from "../../../api/models";
-import type { Group, GroupID, Membership, User, UserID } from "../../../domain";
-import type { Rule } from "../../../domain/rule";
+import type { CreateGroupDTO, CreateRuleDTO, CreateUserDTO } from "../../api/models";
+import type { Group, GroupID, Membership, User, UserID } from "../../domain";
+import type { Rule, RuleID } from "../../domain/rule";
 import type { Datastore } from "../index";
 import { GroupMemberRepository } from "./group-member-repository";
 import { GroupRepository } from "./group-repository";
+import { RuleAttachmentRepository } from "./rule-attachment-repository";
 import { RuleRepository } from "./rule-repository";
 import { UserRepository } from "./user-repository";
 import { Pool } from "pg";
@@ -13,12 +14,14 @@ export class PostgresDatastore implements Datastore {
   private users: UserRepository;
   private groups: GroupRepository;
   private rules: RuleRepository;
+  private ruleAttachments: RuleAttachmentRepository;
 
   constructor(pool: Pool) {
     this.groupMembers = new GroupMemberRepository(pool);
     this.users = new UserRepository(pool);
     this.groups = new GroupRepository(pool);
     this.rules = new RuleRepository(pool);
+    this.ruleAttachments = new RuleAttachmentRepository(pool);
   }
 
   // Members //
@@ -80,5 +83,22 @@ export class PostgresDatastore implements Datastore {
 
   async createRule(rule: CreateRuleDTO): Promise<Rule> {
     return this.rules.create(rule);
+  }
+
+  async getRule(ruleId: RuleID): Promise<Rule | undefined> {
+    return this.rules.get(ruleId);
+  }
+
+  async deleteRule(ruleId: RuleID): Promise<Rule | undefined> {
+    return this.rules.delete(ruleId);
+  }
+
+  // Rule Attachments //
+  async attachRule(groupId: GroupID, ruleId: RuleID): Promise<void> {
+    return this.ruleAttachments.attachRule(groupId, ruleId);
+  }
+
+  async detachRule(groupId: GroupID): Promise<void> {
+    return this.ruleAttachments.detachRule(groupId);
   }
 }
