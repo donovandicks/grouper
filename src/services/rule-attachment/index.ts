@@ -1,0 +1,1 @@
+export { RuleAttachmentService } from "./service";
