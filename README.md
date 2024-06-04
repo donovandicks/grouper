@@ -4,10 +4,10 @@ An application to make and manage user groups.
 
 ## Tech Stack
 
-- __Language__: [TypeScript](https://www.typescriptlang.org/)
-- __Runtime__: [Bun](https://bun.sh/)
-- __Database__: [Postgres](https://www.postgresql.org/)
-- __Cache__: [Redis](https://redis.io/)
+- **Language**: [TypeScript](https://www.typescriptlang.org/)
+- **Runtime**: [Bun](https://bun.sh/)
+- **Database**: [Postgres](https://www.postgresql.org/)
+- **Cache**: [Redis](https://redis.io/)
 
 ## Development
 
