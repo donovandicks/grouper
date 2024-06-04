@@ -4,8 +4,10 @@ An application to make and manage user groups.
 
 ## Tech Stack
 
-Grouper leverages TypeScript on [Bun](https://bun.sh/) and connects to a Postgres
-database.
+- __Language__: [TypeScript](https://www.typescriptlang.org/)
+- __Runtime__: [Bun](https://bun.sh/)
+- __Database__: [Postgres](https://www.postgresql.org/)
+- __Cache__: [Redis](https://redis.io/)
 
 ## Development
 
@@ -30,6 +32,9 @@ bun run build # build the application locally and compile to ./app
 bun run start # run the application locally, directly from TypeScript
 bun run lint # lint the codebase using Prettier, ESLint, and TSC
 bun run format # format the codebase using Prettier
+bun run test:unit # run unit tests
+bun run test:integration # run integration tests, optionally add `:docker` to include the docker setup
+bun run test:e2e # run end-to-end tests, optionally add `:docker` to include the docker setup
 ```
 
 We leverage [Prettier](https://prettier.io/) for formatting and [ESLint](https://eslint.org/) for linting.

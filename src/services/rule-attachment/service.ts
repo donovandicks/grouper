@@ -17,16 +17,23 @@ export class RuleAttachmentService {
 
     await this.db.attachRule(groupId, rule.id);
 
-    // TODO: At this point there is an established relationship between a group and rule,
-    // e.g. a "group" now has an associated "rule" which describes the properties of its
-    // desired members. We must now apply this rule to all users in the system to determine
-    // who should be in this group.
-    //
-    // Ideas:
-    // 1. Do it here in this method as part of a larger "transaction", i.e. "attaching a rule"
-    //    includes applying that rule to the user base
-    // 2. Do it asychronously by publishing an event or making a call to another subsystem to
-    //    indicate that the members need to be determined
+    /**
+     * TODO: At this point there is an established relationship between a group and rule,
+     * e.g. a "group" now has an associated "rule" which describes the properties of its
+     * desired members. We must now apply this rule to all users in the system to determine
+     * who should be in this group.
+     *
+     * Ideas:
+     * 1. Do it here in this method as part of a larger "transaction", i.e. "attaching a rule"
+     *    includes applying that rule to the user base
+     * 2. Do it asychronously by publishing an event or making a call to another subsystem to
+     *    indicate that the members need to be determined
+     *
+     * Followup Tasks:
+     * - Maintain membership based on rule
+     *   - Explore event-driven model, e.g. on change to user or rule, update membership
+     *   - Alternatively, update membership on a scheduled basis
+     */
   }
 
   async detachRule(groupId: GroupID): Promise<void> {
